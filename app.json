@@ -1,19 +1,32 @@
 {
   "expo": {
-    "name": "decision-app",
+    "name": "決策助手",
     "slug": "decision-app",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
+    "description": "一個簡單易用的決策助手，幫助您在日常生活中做出選擇。支援多種預設主題和自定義選項。",
+    "privacy": "public",
+    "platforms": [
+      "ios",
+      "android"
+    ],
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#f5f7fa"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.gglababy.decisionapp",
+      "buildNumber": "1",
+      "infoPlist": {
+        "CFBundleDisplayName": "決策助手",
+        "CFBundleName": "決策助手",
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -24,6 +37,11 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "b2359850-c722-415b-8397-704077b49fb5"
+      }
     }
   }
 }
