@@ -1,5 +1,5 @@
-# 決策助手 - EAS Build PowerShell 腳本
-Write-Host "🎯 決策助手 - iOS 構建腳本" -ForegroundColor Cyan
+# 決策小助手 - EAS Build PowerShell 腳本
+Write-Host "🎯 決策小助手 - iOS 構建腳本" -ForegroundColor Cyan
 Write-Host "=================================" -ForegroundColor Cyan
 
 # 檢查是否已登入 EAS

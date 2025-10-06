@@ -1,13 +1,13 @@
 {
   "expo": {
-    "name": "決策助手",
+    "name": "決策小助手",
     "slug": "decision-app",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
-    "description": "一個簡單易用的決策助手，幫助您在日常生活中做出選擇。支援多種預設主題和自定義選項。",
+    "description": "一個簡單易用的決策小助手，幫助您在日常生活中做出選擇。支援多種預設主題和自定義選項。",
     "privacy": "public",
     "platforms": ["ios", "android"],
     "splash": {
@@ -20,8 +20,8 @@
       "bundleIdentifier": "com.gglababy.decisionapp",
       "buildNumber": "1",
       "infoPlist": {
-        "CFBundleDisplayName": "決策助手",
-        "CFBundleName": "決策助手",
+        "CFBundleDisplayName": "決策小助手",
+        "CFBundleName": "決策小助手",
         "ITSAppUsesNonExemptEncryption": false
       }
     },

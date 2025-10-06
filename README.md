@@ -1,4 +1,4 @@
-# 🎯 決策助手 - Decision App
+# 🎯 決策小助手 - Decision App
 
 一個簡單易用的 React Native Expo 應用，幫助用戶在日常生活中做出決定。
 
