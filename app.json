@@ -9,17 +9,14 @@
     "newArchEnabled": true,
     "description": "一個簡單易用的決策助手，幫助您在日常生活中做出選擇。支援多種預設主題和自定義選項。",
     "privacy": "public",
-    "platforms": [
-      "ios",
-      "android"
-    ],
+    "platforms": ["ios", "android"],
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
       "backgroundColor": "#f5f7fa"
     },
     "ios": {
-      "supportsTablet": true,
+      "supportsTablet": false,
       "bundleIdentifier": "com.gglababy.decisionapp",
       "buildNumber": "1",
       "infoPlist": {
