@@ -183,7 +183,7 @@ const WheelDecisionScreen: React.FC<WheelDecisionScreenProps> = ({
             style={styles.backButton}
             onPress={() => navigation.goBack()}
           >
-            <Text style={styles.backButtonText}>← 返回</Text>
+            <Text style={styles.backButtonText}>←</Text>
           </TouchableOpacity>
           <Text style={styles.title}>🎡 輪盤決策</Text>
           <Text style={styles.subtitle}>讓輪盤為你做決定！</Text>
@@ -281,20 +281,12 @@ const WheelDecisionScreen: React.FC<WheelDecisionScreenProps> = ({
         {/* 輪盤區域 - 只有在有題目時才顯示 */}
         {topic.trim() && (
           <>
-            {getCurrentOptions().length > 0 ? (
-              <View style={styles.wheelSection}>
-                <Text style={styles.wheelTitle}>🎡 決策輪盤</Text>
-                <Text style={styles.wheelSubtitle}>旋轉輪盤來做決定吧！</Text>
+            {getCurrentOptions().length > 0 && (
+              <View>
                 <WheelPicker
                   options={getCurrentOptions()}
                   onResult={handleWheelResult}
                 />
-              </View>
-            ) : (
-              <View style={styles.noOptionsContainer}>
-                <Text style={styles.noOptionsText}>
-                  請添加一些自定義選項，或者選擇預設主題
-                </Text>
               </View>
             )}
 
