@@ -5,21 +5,29 @@ import {
   Dimensions,
   Text,
   TouchableOpacity,
+  StyleSheet,
 } from "react-native";
 import Svg, { Path, Text as SvgText, G } from "react-native-svg";
-import { WheelCalculator } from "../utils/WheelCalculator";
+import { useWheelCalculator } from "../hooks/useWheelCalculator";
+import { WheelPickerProps } from "../types";
 
 const { width: screenWidth } = Dimensions.get("window");
 const wheelSize = Math.min(screenWidth * 0.85, 320);
 const radius = wheelSize / 2 - 10;
 
-const WheelPicker = ({ options = [], onResult }) => {
-  const [isSpinning, setIsSpinning] = useState(false);
+const WheelPicker: React.FC<WheelPickerProps> = ({
+  options = [],
+  onResult,
+}) => {
+  const [isSpinning, setIsSpinning] = useState<boolean>(false);
   const spinValue = useRef(new Animated.Value(0)).current;
-  const [currentRotation, setCurrentRotation] = useState(0); // 保持當前輪盤位置
+  const [currentRotation, setCurrentRotation] = useState<number>(0); // 保持當前輪盤位置
+
+  // 使用 useWheelCalculator Hook
+  const { calculateSpin, calculateResult, getDebugInfo } = useWheelCalculator();
 
   // 紫色調色板
-  const colors = [
+  const colors: string[] = [
     "#9e35e5",
     "#7c3aed",
     "#8b5cf6",
@@ -46,7 +54,7 @@ const WheelPicker = ({ options = [], onResult }) => {
   const segmentAngle = 360 / options.length;
 
   // 生成 SVG 扇形路徑
-  const createPath = (startAngle, endAngle) => {
+  const createPath = (startAngle: number, endAngle: number): string => {
     const start = polarToCartesian(0, 0, radius, endAngle);
     const end = polarToCartesian(0, 0, radius, startAngle);
     const largeArcFlag = endAngle - startAngle <= 180 ? "0" : "1";
@@ -70,7 +78,12 @@ const WheelPicker = ({ options = [], onResult }) => {
     ].join(" ");
   };
 
-  const polarToCartesian = (centerX, centerY, radius, angleInDegrees) => {
+  const polarToCartesian = (
+    centerX: number,
+    centerY: number,
+    radius: number,
+    angleInDegrees: number
+  ): { x: number; y: number } => {
     const angleInRadians = ((angleInDegrees - 90) * Math.PI) / 180.0;
     return {
       x: centerX + radius * Math.cos(angleInRadians),
@@ -79,7 +92,7 @@ const WheelPicker = ({ options = [], onResult }) => {
   };
 
   // 計算文字位置和旋轉角度
-  const getTextPosition = (index) => {
+  const getTextPosition = (index: number): { x: number; y: number } => {
     const angle = ((index * segmentAngle + segmentAngle / 2) * Math.PI) / 180;
     const textRadius = radius * 0.7;
     return {
@@ -89,7 +102,7 @@ const WheelPicker = ({ options = [], onResult }) => {
   };
 
   // 計算文字旋轉角度（讓文字朝向中心）
-  const getTextRotation = (index) => {
+  const getTextRotation = (index: number): number => {
     const angle = index * segmentAngle + segmentAngle / 2;
     // 讓文字朝向中心
     return angle;
@@ -115,8 +128,8 @@ const WheelPicker = ({ options = [], onResult }) => {
     setIsSpinning(true);
 
     try {
-      // 使用 WheelCalculator 計算隨機旋轉參數（從當前位置開始）
-      const spinData = WheelCalculator.calculateSpin(options, currentRotation);
+      // 使用 useWheelCalculator 計算隨機旋轉參數（從當前位置開始）
+      const spinData = calculateSpin(options, currentRotation);
 
       console.log("開始旋轉:", {
         當前位置: currentRotation,
@@ -135,17 +148,10 @@ const WheelPicker = ({ options = [], onResult }) => {
         useNativeDriver: true,
       }).start(() => {
         // 根據最終停止位置計算結果（0度指針位置決定）
-        const finalResult = WheelCalculator.calculateResult(
-          spinData.totalRotation,
-          options
-        );
+        const finalResult = calculateResult(spinData.totalRotation, options);
 
         // 獲取調試信息
-        const debugInfo = WheelCalculator.getDebugInfo(
-          spinData,
-          finalResult,
-          options
-        );
+        const debugInfo = getDebugInfo(spinData, finalResult, options);
         console.log("輪盤結果:", debugInfo);
 
         setTimeout(() => {
@@ -253,7 +259,7 @@ const WheelPicker = ({ options = [], onResult }) => {
   );
 };
 
-const styles = {
+const styles = StyleSheet.create({
   container: {
     alignItems: "center",
     paddingVertical: 20,
@@ -362,6 +368,6 @@ const styles = {
     fontWeight: "bold",
     textAlign: "center",
   },
-};
+});
 
 export default WheelPicker;
