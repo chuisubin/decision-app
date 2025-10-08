@@ -35,30 +35,30 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
       screen: "CoinFlip",
       available: false,
     },
-    {
-      id: "proscons",
-      title: "📊 優缺點列表",
-      description: "理性分析，權衡利弊",
-      color: "#10b981",
-      screen: "ProsCons",
-      available: false,
-    },
-    {
-      id: "random",
-      title: "🎲 隨機選擇",
-      description: "純粹的隨機決策器",
-      color: "#ef4444",
-      screen: "RandomChoice",
-      available: false,
-    },
-    {
-      id: "matrix",
-      title: "📋 決策矩陣",
-      description: "多維度評估，科學決策",
-      color: "#8b5cf6",
-      screen: "DecisionMatrix",
-      available: false,
-    },
+    // {
+    //   id: "proscons",
+    //   title: "📊 優缺點列表",
+    //   description: "理性分析，權衡利弊",
+    //   color: "#10b981",
+    //   screen: "ProsCons",
+    //   available: false,
+    // },
+    // {
+    //   id: "random",
+    //   title: "🎲 隨機選擇",
+    //   description: "純粹的隨機決策器",
+    //   color: "#ef4444",
+    //   screen: "RandomChoice",
+    //   available: false,
+    // },
+    // {
+    //   id: "matrix",
+    //   title: "📋 決策矩陣",
+    //   description: "多維度評估，科學決策",
+    //   color: "#8b5cf6",
+    //   screen: "DecisionMatrix",
+    //   available: false,
+    // },
   ];
 
   const navigateToMethod = (method: (typeof decisionMethods)[0]) => {
@@ -80,7 +80,6 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
           <Text style={styles.subtitle}>選擇困難症的終極解決方案</Text>
         </View>
 
-        {/* Decision Methods Grid */}
         <View style={styles.methodsContainer}>
           <View style={styles.methodsGrid}>
             {decisionMethods.map((method) => (
@@ -96,25 +95,25 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
                 activeOpacity={0.8}
               >
                 <View style={styles.methodCardContent}>
-                  <Text style={styles.methodTitle}>{method.title}</Text>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      marginBottom: 8,
+                    }}
+                  >
+                    <Text style={styles.methodTitle}>{method.title}</Text>
+                    {!method.available && (
+                      <View style={styles.statusBadgeDisabled}>
+                        <Text style={styles.statusTextDisabled}>即將推出</Text>
+                      </View>
+                    )}
+                  </View>
+
                   <Text style={styles.methodDescription}>
                     {method.description}
                   </Text>
-
-                  {method.available ? (
-                    <View
-                      style={[
-                        styles.statusBadge,
-                        { backgroundColor: method.color },
-                      ]}
-                    >
-                      <Text style={styles.statusText}>可用</Text>
-                    </View>
-                  ) : (
-                    <View style={styles.statusBadgeDisabled}>
-                      <Text style={styles.statusTextDisabled}>即將推出</Text>
-                    </View>
-                  )}
                 </View>
 
                 <View

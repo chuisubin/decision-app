@@ -40,13 +40,13 @@ export const styles = StyleSheet.create({
     marginBottom: 20,
   },
   methodsGrid: {
-    flexDirection: "row",
+    flexDirection: "column",
     flexWrap: "wrap",
     justifyContent: "space-between",
     gap: 15,
   },
   methodCard: {
-    width: (width - 55) / 2, // 兩列佈局，考慮 padding 和 gap
+    width: "100%", // 1列佈局，考慮 padding 和 gap
     backgroundColor: "#ffffff",
     borderRadius: 16,
     padding: 20,
@@ -74,13 +74,11 @@ export const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
     color: "#1f2937",
-    marginBottom: 8,
   },
   methodDescription: {
     fontSize: 14,
     color: "#6b7280",
     lineHeight: 20,
-    marginBottom: 15,
   },
   statusBadge: {
     alignSelf: "flex-start",
@@ -117,7 +115,7 @@ export const styles = StyleSheet.create({
   footer: {
     alignItems: "center",
     paddingTop: 20,
-    paddingBottom: 40,
+    paddingBottom: 5,
     borderTopWidth: 1,
     borderTopColor: "#e5e7eb",
     marginTop: 20,
