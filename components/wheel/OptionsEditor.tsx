@@ -146,7 +146,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     paddingHorizontal: 20,
     paddingVertical: 16,
-    paddingTop: 60, // 為狀態欄留空間
+    paddingTop: 20, // 為狀態欄留空間
     backgroundColor: "#ffffff",
     borderBottomWidth: 1,
     borderBottomColor: "#e5e7eb",

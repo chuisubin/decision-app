@@ -50,7 +50,7 @@ export const styles = StyleSheet.create({
     fontWeight: "600",
   },
   presetContainer: {
-    marginTop: 20,
+    marginTop: 8,
   },
   presetTitle: {
     fontSize: 16,
@@ -66,7 +66,7 @@ export const styles = StyleSheet.create({
   categoryContainer: {
     flexDirection: "row",
     flexWrap: "wrap",
-    gap: 8,
+    gap: 4,
   },
   categoryTag: {
     backgroundColor: "#f3f4f6",
@@ -168,6 +168,6 @@ export const styles = StyleSheet.create({
     fontSize: 12,
     color: "#6b7280",
     textAlign: "right",
-    marginBottom: 16,
+    marginBottom: 0,
   },
 });

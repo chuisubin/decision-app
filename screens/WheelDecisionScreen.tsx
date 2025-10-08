@@ -9,6 +9,7 @@ import {
   Animated,
   KeyboardAvoidingView,
   Platform,
+  Modal,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { NavigationProp } from "@react-navigation/native";
@@ -105,6 +106,7 @@ const WheelDecisionScreen: React.FC<WheelDecisionScreenProps> = ({
   const [topic, setTopic] = useState<string>("");
   const [customOptions, setCustomOptions] = useState<string[]>([""]);
   const [result, setResult] = useState<string>("");
+  const [showResultPopup, setShowResultPopup] = useState<boolean>(false);
   const [fadeAnim] = useState<Animated.Value>(new Animated.Value(0));
   const [selectedPresetCategory, setSelectedPresetCategory] = useState<
     string | null
@@ -125,6 +127,7 @@ const WheelDecisionScreen: React.FC<WheelDecisionScreenProps> = ({
   // 處理輪盤結果
   const handleWheelResult = (selectedOption: string): void => {
     setResult(selectedOption);
+    setShowResultPopup(true);
 
     // 結果動畫
     Animated.sequence([
@@ -140,13 +143,9 @@ const WheelDecisionScreen: React.FC<WheelDecisionScreenProps> = ({
     setTopic("");
     setCustomOptions([""]);
     setResult("");
+    setShowResultPopup(false);
     setSelectedPresetCategory(null);
     fadeAnim.setValue(0);
-  };
-
-  const selectPresetTopic = (category: string): void => {
-    setTopic(`${category}`);
-    setSelectedPresetCategory(category);
   };
 
   const handleOptionsUpdate = (newOptions: string[]): void => {
@@ -261,28 +260,50 @@ const WheelDecisionScreen: React.FC<WheelDecisionScreenProps> = ({
                   </Text>
                 </View>
               )}
-
-              {/* 結果顯示 */}
-              {result && (
-                <Animated.View
-                  style={[styles.resultContainer, { opacity: fadeAnim }]}
-                >
-                  <Text style={styles.resultTitle}>✨ 輪盤結果出爐！</Text>
-                  <View style={styles.resultBox}>
-                    <Text style={styles.resultText}>{result}</Text>
-                  </View>
-                  <TouchableOpacity
-                    style={styles.resetButton}
-                    onPress={resetApp}
-                  >
-                    <Text style={styles.resetButtonText}>🔄 重新開始</Text>
-                  </TouchableOpacity>
-                </Animated.View>
-              )}
             </>
+          )}
+          {/* 底部結果區域 - 有結果時顯示 */}
+          {result && (
+            <View style={styles.bottomResultContainer}>
+              <View style={styles.bottomResultContent}>
+                <Text style={styles.bottomResultLabel}>結果：</Text>
+                <Text style={styles.bottomResultText}>{result}</Text>
+              </View>
+              <TouchableOpacity
+                style={styles.bottomResetButton}
+                onPress={resetApp}
+              >
+                <Text style={styles.bottomResetButtonText}>🔄 重置</Text>
+              </TouchableOpacity>
+            </View>
           )}
         </ScrollView>
       </KeyboardAvoidingView>
+
+      {/* Result Popup Modal */}
+      <Modal
+        visible={showResultPopup}
+        transparent={true}
+        animationType="fade"
+        onRequestClose={() => setShowResultPopup(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <Animated.View style={[styles.resultPopup, { opacity: fadeAnim }]}>
+            <Text style={styles.resultPopupTitle}>✨ 輪盤結果出爐！</Text>
+            <View style={styles.resultPopupBox}>
+              <Text style={styles.resultPopupText}>{result}</Text>
+            </View>
+            <View style={styles.resultPopupButtons}>
+              <TouchableOpacity
+                style={styles.resultPopupButton}
+                onPress={() => setShowResultPopup(false)}
+              >
+                <Text style={styles.resultPopupButtonText}>OK!</Text>
+              </TouchableOpacity>
+            </View>
+          </Animated.View>
+        </View>
+      </Modal>
 
       {/* Options Editor Modal */}
       <OptionsEditor

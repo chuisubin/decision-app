@@ -283,13 +283,13 @@ const WheelPicker: React.FC<WheelPickerProps> = ({
       </View>
 
       {/* 重置按鈕 */}
-      {currentRotation > 0 && !isSpinning && (
+      {/* {currentRotation > 0 && !isSpinning && (
         <View style={styles.resetButtonContainer}>
           <TouchableOpacity style={styles.resetButton} onPress={resetWheel}>
             <Text style={styles.resetButtonText}>🔄 重置位置</Text>
           </TouchableOpacity>
         </View>
-      )}
+      )} */}
     </View>
   );
 };
