@@ -35,22 +35,22 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
       screen: "CoinFlip",
       available: false,
     },
-    {
-      id: "proscons",
-      title: "📊 優缺點列表",
-      description: "理性分析，權衡利弊",
-      color: "#10b981",
-      screen: "ProsCons",
-      available: false,
-    },
-    {
-      id: "random",
-      title: "🎲 隨機選擇",
-      description: "純粹的隨機決策器",
-      color: "#ef4444",
-      screen: "RandomChoice",
-      available: false,
-    },
+    // {
+    //   id: "proscons",
+    //   title: "📊 優缺點列表",
+    //   description: "理性分析，權衡利弊",
+    //   color: "#10b981",
+    //   screen: "ProsCons",
+    //   available: false,
+    // },
+    // {
+    //   id: "random",
+    //   title: "🎲 隨機選擇",
+    //   description: "純粹的隨機決策器",
+    //   color: "#ef4444",
+    //   screen: "RandomChoice",
+    //   available: false,
+    // },
     // {
     //   id: "matrix",
     //   title: "📋 決策矩陣",
@@ -130,7 +130,9 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
         {/* Footer */}
         <View style={styles.footer}>
           <Text style={styles.footerText}>更多決策方法正在開發中...</Text>
-          <Text style={styles.versionText}>v{packageJson.version}</Text>
+          {__DEV__ && (
+            <Text style={styles.versionText}>v{packageJson.version}</Text>
+          )}
         </View>
       </ScrollView>
     </SafeAreaView>

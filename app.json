@@ -2,7 +2,7 @@
   "expo": {
     "name": "決策小助手",
     "slug": "decision-app",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -18,7 +18,7 @@
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "com.gglababy.decisionapp",
-      "buildNumber": "1",
+      "buildNumber": "2",
       "infoPlist": {
         "CFBundleDisplayName": "決策小助手",
         "CFBundleName": "決策小助手",
