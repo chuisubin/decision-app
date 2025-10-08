@@ -231,7 +231,12 @@ const WheelPicker: React.FC<WheelPickerProps> = ({
 
               return (
                 <G key={index}>
-                  <Path d={createPath(startAngle, endAngle)} fill={color} />
+                  <Path
+                    d={createPath(startAngle, endAngle)}
+                    fill={color}
+                    stroke="#ffffff"
+                    strokeWidth={1}
+                  />
                   <SvgText
                     x={textPos.x}
                     y={textPos.y}
@@ -270,7 +275,6 @@ const WheelPicker: React.FC<WheelPickerProps> = ({
             disabled={isSpinning}
             activeOpacity={0.8}
           >
-            <Text style={styles.centerText}>{isSpinning ? "🎡" : "🎯"}</Text>
             <Text style={styles.centerButtonText}>
               {isSpinning ? "旋轉中" : "開始"}
             </Text>
@@ -315,14 +319,16 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 5,
     zIndex: 10,
-    backgroundColor: "#9e35e5",
+    backgroundColor: "#ff6b35", // 改為橘紅色
     borderRadius: 22, // 進一步增大指針圓角
-    padding: 12, // 增大指針內邊距
-    shadowColor: "#9e35e5",
+    padding: 10, // 增大指針內邊距
+    shadowColor: "#ff6b35", // 陰影色也改為橘紅色
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.4,
     shadowRadius: 8,
     elevation: 8,
+    borderWidth: 2,
+    borderColor: "#ffffff",
   },
   pointerText: {
     color: "#ffffff",
@@ -343,9 +349,9 @@ const styles = StyleSheet.create({
     backgroundColor: "#ff6b35", // 使用更突出的橘紅色
     alignItems: "center",
     justifyContent: "center",
-    borderWidth: 6, // 增加邊框寬度
+    borderWidth: 2, // 增加邊框寬度
     borderColor: "#ffffff",
-    shadowColor: "#ff6b35",
+    shadowColor: "#ffb347",
     shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.5,
     shadowRadius: 12,
@@ -355,8 +361,8 @@ const styles = StyleSheet.create({
   },
   centerCircleDisabled: {
     backgroundColor: "#ffb399", // 對應橘紅色的禁用狀態
-    opacity: 0.7,
-    shadowOpacity: 0.2, // 減少陰影
+    opacity: 1,
+    shadowOpacity: 0.5, // 減少陰影
   },
   centerText: {
     fontSize: 26, // 進一步增大表情符號大小

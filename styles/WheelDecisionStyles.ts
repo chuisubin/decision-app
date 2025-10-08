@@ -259,7 +259,7 @@ export const styles = StyleSheet.create({
   },
   // 新增的樣式
   topicSection: {
-    marginBottom: 20,
+    marginBottom: 0,
   },
   sectionTitle: {
     fontSize: 18,

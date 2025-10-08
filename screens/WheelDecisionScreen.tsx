@@ -119,9 +119,7 @@ const WheelDecisionScreen: React.FC<WheelDecisionScreenProps> = ({
       .map((option) => option.trim())
       .filter((option) => option);
 
-    return customOptionsFiltered.length > 0
-      ? customOptionsFiltered
-      : ["選項A", "選項B", "選項C", "試試看", "不要", "改天再說"];
+    return customOptionsFiltered.length > 0 ? customOptionsFiltered : [];
   };
 
   // 處理輪盤結果
