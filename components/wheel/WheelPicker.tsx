@@ -8,12 +8,12 @@ import {
   StyleSheet,
 } from "react-native";
 import Svg, { Path, Text as SvgText, G } from "react-native-svg";
-import { useWheelCalculator } from "../hooks/useWheelCalculator";
-import { WheelPickerProps } from "../types";
+import { useWheelCalculator } from "../../hooks/useWheelCalculator";
+import { WheelPickerProps } from "../../types";
 
 const { width: screenWidth } = Dimensions.get("window");
-const wheelSize = Math.min(screenWidth * 0.85, 320);
-const radius = wheelSize / 2 - 10;
+const wheelSize = Math.min(screenWidth * 0.95, 420); // 進一步增大輪盤尺寸
+const radius = wheelSize / 2 - 15; // 相應調整半徑
 
 const WheelPicker: React.FC<WheelPickerProps> = ({
   options = [],
@@ -21,10 +21,36 @@ const WheelPicker: React.FC<WheelPickerProps> = ({
 }) => {
   const [isSpinning, setIsSpinning] = useState<boolean>(false);
   const spinValue = useRef(new Animated.Value(0)).current;
+  const pulseValue = useRef(new Animated.Value(1)).current; // 脈動動畫值
   const [currentRotation, setCurrentRotation] = useState<number>(0); // 保持當前輪盤位置
 
   // 使用 useWheelCalculator Hook
   const { calculateSpin, calculateResult, getDebugInfo } = useWheelCalculator();
+
+  // 脈動動畫
+  React.useEffect(() => {
+    if (!isSpinning) {
+      const pulseAnimation = Animated.loop(
+        Animated.sequence([
+          Animated.timing(pulseValue, {
+            toValue: 1.1,
+            duration: 1000,
+            useNativeDriver: true,
+          }),
+          Animated.timing(pulseValue, {
+            toValue: 1,
+            duration: 1000,
+            useNativeDriver: true,
+          }),
+        ])
+      );
+      pulseAnimation.start();
+      return () => pulseAnimation.stop();
+    } else {
+      pulseValue.setValue(1);
+      return undefined;
+    }
+  }, [isSpinning, pulseValue]);
 
   // 紫色調色板
   const colors: string[] = [
@@ -193,9 +219,9 @@ const WheelPicker: React.FC<WheelPickerProps> = ({
           <Svg
             width={wheelSize}
             height={wheelSize}
-            viewBox={`${-radius - 10} ${
-              -radius - 10
-            } ${wheelSize} ${wheelSize}`}
+            viewBox={`${-radius - 10} ${-radius - 10} ${(radius + 10) * 2} ${
+              (radius + 10) * 2
+            }`}
           >
             {options.map((option, index) => {
               const startAngle = index * segmentAngle;
@@ -205,17 +231,12 @@ const WheelPicker: React.FC<WheelPickerProps> = ({
 
               return (
                 <G key={index}>
-                  <Path
-                    d={createPath(startAngle, endAngle)}
-                    fill={color}
-                    stroke="#ffffff"
-                    strokeWidth="3"
-                  />
+                  <Path d={createPath(startAngle, endAngle)} fill={color} />
                   <SvgText
                     x={textPos.x}
                     y={textPos.y}
                     fill="#ffffff"
-                    fontSize={options.length > 8 ? "12" : "14"}
+                    fontSize={options.length > 8 ? "16" : "18"} // 進一步增大文字尺寸
                     fontWeight="bold"
                     textAnchor="middle"
                     alignmentBaseline="middle"
@@ -223,7 +244,7 @@ const WheelPicker: React.FC<WheelPickerProps> = ({
                       textPos.y
                     })`}
                   >
-                    {option.length > 6 ? option.substring(0, 6) + ".." : option}
+                    {option.length > 8 ? option.substring(0, 8) + ".." : option}
                   </SvgText>
                 </G>
               );
@@ -231,30 +252,40 @@ const WheelPicker: React.FC<WheelPickerProps> = ({
           </Svg>
         </Animated.View>
 
-        {/* 中心圓 */}
-        <View style={styles.centerCircle}>
-          <Text style={styles.centerText}>🎯</Text>
-        </View>
+        {/* 中心按鈕 */}
+        <Animated.View
+          style={{
+            transform: [{ scale: isSpinning ? 1 : pulseValue }],
+            position: "absolute",
+            top: wheelSize / 2 - 50, // 動態計算中心位置
+            left: wheelSize / 2 - 50, // 動態計算中心位置
+          }}
+        >
+          <TouchableOpacity
+            style={[
+              styles.centerCircle,
+              isSpinning && styles.centerCircleDisabled,
+            ]}
+            onPress={spin}
+            disabled={isSpinning}
+            activeOpacity={0.8}
+          >
+            <Text style={styles.centerText}>{isSpinning ? "🎡" : "🎯"}</Text>
+            <Text style={styles.centerButtonText}>
+              {isSpinning ? "旋轉中" : "開始"}
+            </Text>
+          </TouchableOpacity>
+        </Animated.View>
       </View>
 
-      {/* 按鈕區域 */}
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity
-          style={[styles.spinButton, isSpinning && styles.spinButtonDisabled]}
-          onPress={spin}
-          disabled={isSpinning}
-        >
-          <Text style={styles.spinButtonText}>
-            {isSpinning ? "🎡 旋轉中..." : "🎲 旋轉輪盤"}
-          </Text>
-        </TouchableOpacity>
-
-        {currentRotation > 0 && !isSpinning && (
+      {/* 重置按鈕 */}
+      {currentRotation > 0 && !isSpinning && (
+        <View style={styles.resetButtonContainer}>
           <TouchableOpacity style={styles.resetButton} onPress={resetWheel}>
             <Text style={styles.resetButtonText}>🔄 重置位置</Text>
           </TouchableOpacity>
-        )}
-      </View>
+        </View>
+      )}
     </View>
   );
 };
@@ -285,17 +316,17 @@ const styles = StyleSheet.create({
     top: 5,
     zIndex: 10,
     backgroundColor: "#9e35e5",
-    borderRadius: 15,
-    padding: 8,
+    borderRadius: 22, // 進一步增大指針圓角
+    padding: 12, // 增大指針內邊距
     shadowColor: "#9e35e5",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
-    elevation: 5,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.4,
+    shadowRadius: 8,
+    elevation: 8,
   },
   pointerText: {
     color: "#ffffff",
-    fontSize: 20,
+    fontSize: 28, // 進一步增大指針文字
     fontWeight: "bold",
   },
   wheel: {
@@ -303,53 +334,50 @@ const styles = StyleSheet.create({
     height: wheelSize,
     alignItems: "center",
     justifyContent: "center",
+    position: "relative",
   },
   centerCircle: {
-    position: "absolute",
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    backgroundColor: "#9e35e5",
+    width: 100, // 進一步增大中心按鈕
+    height: 100,
+    borderRadius: 50,
+    backgroundColor: "#ff6b35", // 使用更突出的橘紅色
     alignItems: "center",
     justifyContent: "center",
-    borderWidth: 3,
+    borderWidth: 6, // 增加邊框寬度
     borderColor: "#ffffff",
-    shadowColor: "#9e35e5",
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.3,
-    shadowRadius: 6,
-    elevation: 5,
+    shadowColor: "#ff6b35",
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.5,
+    shadowRadius: 12,
+    elevation: 10,
+    // 添加內部陰影效果
+    overflow: "hidden",
+  },
+  centerCircleDisabled: {
+    backgroundColor: "#ffb399", // 對應橘紅色的禁用狀態
+    opacity: 0.7,
+    shadowOpacity: 0.2, // 減少陰影
   },
   centerText: {
-    fontSize: 20,
+    fontSize: 26, // 進一步增大表情符號大小
+    textShadowColor: "rgba(0, 0, 0, 0.3)",
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 2,
   },
-  buttonContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    marginTop: 20,
-    gap: 10,
-  },
-  spinButton: {
-    backgroundColor: "#9e35e5",
-    paddingVertical: 15,
-    paddingHorizontal: 30,
-    borderRadius: 25,
-    shadowColor: "#9e35e5",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 5,
-  },
-  spinButtonDisabled: {
-    backgroundColor: "#c4b5fd",
-    opacity: 0.6,
-  },
-  spinButtonText: {
+  centerButtonText: {
     color: "#ffffff",
-    fontSize: 18,
-    fontWeight: "bold",
+    fontSize: 15, // 增大按鈕文字
+    fontWeight: "900", // 使用最粗字體
     textAlign: "center",
+    marginTop: 2,
+    textShadowColor: "rgba(0, 0, 0, 0.3)",
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 2,
+    letterSpacing: 0.5, // 增加字母間距
+  },
+  resetButtonContainer: {
+    alignItems: "center",
+    marginTop: 20,
   },
   resetButton: {
     backgroundColor: "#6b7280",

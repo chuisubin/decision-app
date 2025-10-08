@@ -5,45 +5,67 @@ export const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#f8f4ff", // 淺紫色背景
   },
+  keyboardAvoidingView: {
+    flex: 1,
+  },
   scrollContainer: {
     flexGrow: 1,
     padding: 20,
+    paddingTop: 10, // 減少頂部間距，因為 header 現在是固定的
   },
   header: {
+    flexDirection: "row",
     alignItems: "center",
-    marginBottom: 30,
-    paddingTop: 20,
-  },
-  backButton: {
-    position: "absolute",
-    left: 0,
-    top: 20,
-    padding: 10,
-    backgroundColor: "#ffffff",
-    borderRadius: 12,
+    justifyContent: "space-between",
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    paddingTop: 20, // 給狀態欄留空間
+    backgroundColor: "#f8f4ff", // 與背景色一致
+    borderBottomWidth: 1,
+    borderBottomColor: "rgba(158, 53, 229, 0.15)",
     shadowColor: "#9e35e5",
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
+    shadowOpacity: 0.08,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  backButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: "rgba(158, 53, 229, 0.1)",
+    alignItems: "center",
+    justifyContent: "center",
+    borderWidth: 1,
+    borderColor: "rgba(158, 53, 229, 0.2)",
   },
   backButtonText: {
     color: "#9e35e5",
-    fontSize: 16,
-    fontWeight: "600",
+    fontSize: 18,
+    fontWeight: "700",
+    marginLeft: -1, // 微調箭頭位置
   },
   title: {
-    fontSize: 32,
-    fontWeight: "bold",
-    color: "#9e35e5", // 主紫色
-    marginBottom: 8,
+    fontSize: 20,
+    fontWeight: "700",
+    color: "#9e35e5",
     textAlign: "center",
+    flex: 1,
+    marginHorizontal: 16,
+  },
+  headerRightSpace: {
+    width: 40, // 與 backButton 同寬，保持平衡
+  },
+  titleContainer: {
+    flex: 1,
+    alignItems: "center",
   },
   subtitle: {
-    fontSize: 16,
-    color: "#6b46c1", // 深紫色
-    textAlign: "center",
-    opacity: 0.8,
+    fontSize: 12,
+    color: "#9e35e5",
+    opacity: 0.7,
+    marginTop: 2,
+    fontWeight: "500",
   },
   topicPreview: {
     fontSize: 14,
@@ -234,5 +256,155 @@ export const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "600",
     textAlign: "center",
+  },
+  // 新增的樣式
+  topicSection: {
+    marginBottom: 20,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: "600",
+    color: "#9e35e5",
+    marginBottom: 12,
+    textAlign: "left",
+  },
+  // 新的選項樣式
+  optionItemRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 12,
+    backgroundColor: "#ffffff",
+    borderRadius: 12,
+    padding: 4,
+    shadowColor: "#9e35e5",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+    elevation: 1,
+  },
+  optionNumberContainer: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: "#9e35e5",
+    alignItems: "center",
+    justifyContent: "center",
+    marginRight: 12,
+  },
+  optionNumber: {
+    color: "#ffffff",
+    fontSize: 14,
+    fontWeight: "600",
+  },
+  optionInput: {
+    flex: 1,
+    fontSize: 16,
+    color: "#343a40",
+    paddingVertical: 12,
+    paddingHorizontal: 0,
+    minHeight: 44,
+  },
+  removeOptionButton: {
+    width: 32,
+    height: 32,
+    alignItems: "center",
+    justifyContent: "center",
+    marginLeft: 8,
+  },
+  removeOptionText: {
+    fontSize: 16,
+  },
+  addOptionButton: {
+    backgroundColor: "#f3f4f6",
+    borderRadius: 12,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    marginTop: 8,
+    borderWidth: 2,
+    borderColor: "#e5e7eb",
+    borderStyle: "dashed",
+    alignItems: "center",
+  },
+  addOptionText: {
+    color: "#9e35e5",
+    fontSize: 16,
+    fontWeight: "500",
+  },
+  // 新的選項按鈕樣式
+  optionsSection: {
+    marginBottom: 20,
+  },
+  optionsButton: {
+    backgroundColor: "#ffffff",
+    borderRadius: 16,
+    padding: 20,
+    shadowColor: "#9e35e5",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 3,
+    borderWidth: 1,
+    borderColor: "#e5e7eb",
+  },
+  optionsButtonContent: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  optionsButtonIcon: {
+    fontSize: 24,
+    marginRight: 16,
+  },
+  optionsButtonTextContainer: {
+    flex: 1,
+  },
+  optionsButtonTitle: {
+    fontSize: 18,
+    fontWeight: "600",
+    color: "#9e35e5",
+    marginBottom: 4,
+  },
+  optionsButtonSubtitle: {
+    fontSize: 14,
+    color: "#6b7280",
+  },
+  optionsButtonArrow: {
+    fontSize: 24,
+    color: "#9e35e5",
+    fontWeight: "300",
+  },
+  // 輪盤占位符樣式
+  wheelPlaceholder: {
+    backgroundColor: "#ffffff",
+    borderRadius: 16,
+    padding: 40,
+    marginBottom: 20,
+    alignItems: "center",
+    shadowColor: "#9e35e5",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.05,
+    shadowRadius: 8,
+    elevation: 2,
+    borderWidth: 2,
+    borderColor: "#f3f4f6",
+    borderStyle: "dashed",
+  },
+  wheelPlaceholderText: {
+    fontSize: 18,
+    fontWeight: "600",
+    color: "#9e35e5",
+    textAlign: "center",
+    marginBottom: 8,
+  },
+  wheelPlaceholderHint: {
+    fontSize: 14,
+    color: "#6b7280",
+    textAlign: "center",
+    lineHeight: 20,
   },
 });

@@ -7,13 +7,16 @@ import {
   Alert,
   ScrollView,
   Animated,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { NavigationProp } from "@react-navigation/native";
 import { styles } from "../styles/WheelDecisionStyles";
-import WheelPicker from "../components/WheelPicker";
+import WheelPicker from "../components/wheel/WheelPicker";
 import Collapsible from "../components/Collapsible";
-import TopicInput from "../components/TopicInput";
+import TopicInput from "../components/wheel/TopicInput";
+import OptionsEditor from "../components/wheel/OptionsEditor";
 import { PresetOptions } from "../types";
 
 interface WheelDecisionScreenProps {
@@ -106,28 +109,19 @@ const WheelDecisionScreen: React.FC<WheelDecisionScreenProps> = ({
   const [selectedPresetCategory, setSelectedPresetCategory] = useState<
     string | null
   >(null);
+  const [showOptionsEditor, setShowOptionsEditor] = useState<boolean>(false);
 
   // 獲取當前可用選項
   const getCurrentOptions = (): string[] => {
     if (!topic.trim()) return [];
 
-    const topicLower = topic.toLowerCase();
-    const matchedCategory = Object.keys(presetOptions).find(
-      (category) =>
-        topicLower.includes(category) || category.includes(topicLower)
-    );
+    const customOptionsFiltered = customOptions
+      .map((option) => option.trim())
+      .filter((option) => option);
 
-    if (matchedCategory) {
-      return presetOptions[matchedCategory];
-    } else {
-      const customOptionsFiltered = customOptions
-        .map((option) => option.trim())
-        .filter((option) => option);
-
-      return customOptionsFiltered.length > 0
-        ? customOptionsFiltered
-        : ["選項A", "選項B", "選項C", "試試看", "不要", "改天再說"];
-    }
+    return customOptionsFiltered.length > 0
+      ? customOptionsFiltered
+      : ["選項A", "選項B", "選項C", "試試看", "不要", "改天再說"];
   };
 
   // 處理輪盤結果
@@ -152,161 +146,153 @@ const WheelDecisionScreen: React.FC<WheelDecisionScreenProps> = ({
     fadeAnim.setValue(0);
   };
 
-  const addCustomOption = () => {
-    setCustomOptions([...customOptions, ""]);
-  };
-
-  const updateCustomOption = (index: number, value: string): void => {
-    const newOptions = [...customOptions];
-    newOptions[index] = value;
-    setCustomOptions(newOptions);
-  };
-
-  const removeCustomOption = (index: number): void => {
-    if (customOptions.length > 1) {
-      const newOptions = customOptions.filter((_, i) => i !== index);
-      setCustomOptions(newOptions);
-    }
-  };
-
   const selectPresetTopic = (category: string): void => {
     setTopic(`${category}`);
     setSelectedPresetCategory(category);
   };
 
+  const handleOptionsUpdate = (newOptions: string[]): void => {
+    setCustomOptions(newOptions);
+  };
+
+  const openOptionsEditor = (): void => {
+    setShowOptionsEditor(true);
+  };
+
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
-        {/* Header with back button */}
-        <View style={styles.header}>
-          <TouchableOpacity
-            style={styles.backButton}
-            onPress={() => navigation.goBack()}
-          >
-            <Text style={styles.backButtonText}>←</Text>
-          </TouchableOpacity>
+      {/* Header with back button - Fixed at top */}
+      <View style={styles.header}>
+        <TouchableOpacity
+          style={styles.backButton}
+          onPress={() => navigation.goBack()}
+        >
+          <Text style={styles.backButtonText}>←</Text>
+        </TouchableOpacity>
+        <View style={styles.titleContainer}>
           <Text style={styles.title}>🎡 輪盤決策</Text>
           <Text style={styles.subtitle}>讓輪盤為你做決定！</Text>
         </View>
+        <View style={styles.headerRightSpace} />
+      </View>
 
-        <Collapsible
-          title="你正在糾結什麼？"
-          icon="🤔"
-          isInitiallyCollapsed={false} // 預設展開，讓用戶輸入題目
-          rightElement={
-            topic.trim() && (
-              <Text style={styles.topicPreview} numberOfLines={1}>
-                {topic}
-              </Text>
-            )
-          }
+      <KeyboardAvoidingView
+        style={styles.keyboardAvoidingView}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 20}
+      >
+        <ScrollView
+          contentContainerStyle={styles.scrollContainer}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
         >
-          <TopicInput
-            topic={topic}
-            onTopicChange={(text) => {
-              setTopic(text);
-              // 檢查是否匹配預設主題
-              const matchedCategory = Object.keys(presetOptions).find(
-                (category) =>
-                  text.toLowerCase().includes(category) ||
-                  category.includes(text.toLowerCase())
-              );
-              setSelectedPresetCategory(matchedCategory || null);
-            }}
-            onCategoryMatch={setSelectedPresetCategory}
-          />
-        </Collapsible>
+          {/* 題目輸入區域 - 始終顯示 */}
+          <View style={styles.topicSection}>
+            {!topic && (
+              <Text style={styles.sectionTitle}>🤔 請輸入您的問題</Text>
+            )}
+            <TopicInput
+              topic={topic}
+              onTopicChange={(text) => {
+                setTopic(text);
+                // 檢查是否匹配預設主題
+                const matchedCategory = Object.keys(presetOptions).find(
+                  (category) =>
+                    text.toLowerCase().includes(category) ||
+                    category.includes(text.toLowerCase())
+                );
+                setSelectedPresetCategory(matchedCategory || null);
 
-        {/* 只有在有題目時才顯示其他組件 */}
-        {topic.trim() && (
-          <Collapsible
-            title="自定義選項"
-            icon="✍️"
-            isInitiallyCollapsed={true}
-            rightElement={
-              <Text style={styles.optionsCount}>
-                ({customOptions.filter((opt) => opt.trim()).length} 個選項)
-              </Text>
-            }
-          >
-            <Text style={styles.hint}>每個輸入框代表一個選擇</Text>
-
-            {customOptions.map((option, index) => (
-              <View key={index} style={styles.optionRow}>
-                <TextInput
-                  style={[styles.optionsInput, { flex: 1 }]}
-                  placeholder={`選項 ${index + 1}`}
-                  value={option}
-                  onChangeText={(value) => updateCustomOption(index, value)}
-                />
-                {customOptions.length > 1 && (
-                  <TouchableOpacity
-                    style={styles.removeButton}
-                    onPress={() => removeCustomOption(index)}
-                  >
-                    <Text style={styles.removeButtonText}>✕</Text>
-                  </TouchableOpacity>
-                )}
-              </View>
-            ))}
-
-            <TouchableOpacity
-              style={styles.addButton}
-              onPress={addCustomOption}
-            >
-              <Text style={styles.addButtonText}>+ 新增選擇</Text>
-            </TouchableOpacity>
-          </Collapsible>
-        )}
-
-        {/* 只有在有題目且匹配預設分類時才顯示 */}
-        {topic.trim() && selectedPresetCategory && (
-          <View style={styles.presetOptionsContainer}>
-            <Text style={styles.presetOptionsTitle}>
-              📋 {selectedPresetCategory}的預設選項
-            </Text>
-            <Text style={styles.presetOptionsHint}>
-              以下是系統為您準備的選項，使用輪盤進行隨機選擇
-            </Text>
-            <View style={styles.presetOptionsGrid}>
-              {presetOptions[selectedPresetCategory].map((option, index) => (
-                <View key={index} style={styles.presetOptionTag}>
-                  <Text style={styles.presetOptionText}>{option}</Text>
-                </View>
-              ))}
-            </View>
+                // 如果匹配到預設分類，自動填入選項
+                if (matchedCategory && presetOptions[matchedCategory]) {
+                  setCustomOptions(presetOptions[matchedCategory]);
+                } else {
+                  // 如果沒有匹配到預設分類，重置為空選項
+                  setCustomOptions([""]);
+                }
+              }}
+              onCategoryMatch={(category) => {
+                setSelectedPresetCategory(category);
+                // 當直接選擇分類時也要填入選項
+                if (category && presetOptions[category]) {
+                  setCustomOptions(presetOptions[category]);
+                }
+              }}
+            />
           </View>
-        )}
 
-        {/* 輪盤區域 - 只有在有題目時才顯示 */}
-        {topic.trim() && (
-          <>
-            {getCurrentOptions().length > 0 && (
-              <View>
-                <WheelPicker
-                  options={getCurrentOptions()}
-                  onResult={handleWheelResult}
-                />
-              </View>
-            )}
-
-            {/* 結果顯示 */}
-            {result && (
-              <Animated.View
-                style={[styles.resultContainer, { opacity: fadeAnim }]}
+          {/* 只有在有題目時才顯示選項區域 */}
+          {topic.trim() && (
+            <View style={styles.optionsSection}>
+              <TouchableOpacity
+                style={styles.optionsButton}
+                onPress={openOptionsEditor}
               >
-                <Text style={styles.resultTitle}>✨ 輪盤結果出爐！</Text>
-                <View style={styles.resultBox}>
-                  <Text style={styles.resultText}>{result}</Text>
+                <View style={styles.optionsButtonContent}>
+                  <Text style={styles.optionsButtonIcon}>📝</Text>
+                  <View style={styles.optionsButtonTextContainer}>
+                    <Text style={styles.optionsButtonTitle}>選項設定</Text>
+                    <Text style={styles.optionsButtonSubtitle}>
+                      目前有 {customOptions.filter((opt) => opt.trim()).length}{" "}
+                      個選項
+                    </Text>
+                  </View>
+                  <Text style={styles.optionsButtonArrow}>›</Text>
                 </View>
-                <TouchableOpacity style={styles.resetButton} onPress={resetApp}>
-                  <Text style={styles.resetButtonText}>🔄 重新開始</Text>
-                </TouchableOpacity>
-              </Animated.View>
-            )}
-          </>
-        )}
-      </ScrollView>
+              </TouchableOpacity>
+            </View>
+          )}
+
+          {/* 輪盤區域 - 只有在有題目且至少2個選項時才顯示 */}
+          {topic.trim() && (
+            <>
+              {getCurrentOptions().length >= 2 ? (
+                <View>
+                  <WheelPicker
+                    options={getCurrentOptions()}
+                    onResult={handleWheelResult}
+                  />
+                </View>
+              ) : (
+                <View style={styles.wheelPlaceholder}>
+                  <Text style={styles.wheelPlaceholderText}>
+                    🎡 需要至少 2 個選項才能開始決策
+                  </Text>
+                  <Text style={styles.wheelPlaceholderHint}>
+                    請點擊「選項設定」添加更多選項
+                  </Text>
+                </View>
+              )}
+
+              {/* 結果顯示 */}
+              {result && (
+                <Animated.View
+                  style={[styles.resultContainer, { opacity: fadeAnim }]}
+                >
+                  <Text style={styles.resultTitle}>✨ 輪盤結果出爐！</Text>
+                  <View style={styles.resultBox}>
+                    <Text style={styles.resultText}>{result}</Text>
+                  </View>
+                  <TouchableOpacity
+                    style={styles.resetButton}
+                    onPress={resetApp}
+                  >
+                    <Text style={styles.resetButtonText}>🔄 重新開始</Text>
+                  </TouchableOpacity>
+                </Animated.View>
+              )}
+            </>
+          )}
+        </ScrollView>
+      </KeyboardAvoidingView>
+
+      {/* Options Editor Modal */}
+      <OptionsEditor
+        visible={showOptionsEditor}
+        options={customOptions}
+        onClose={() => setShowOptionsEditor(false)}
+        onSave={handleOptionsUpdate}
+      />
     </SafeAreaView>
   );
 };
