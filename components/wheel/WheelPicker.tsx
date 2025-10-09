@@ -6,6 +6,7 @@ import {
   Text,
   TouchableOpacity,
   StyleSheet,
+  Easing,
 } from "react-native";
 import Svg, { Path, Text as SvgText, G } from "react-native-svg";
 import { useWheelCalculator } from "../../hooks/useWheelCalculator";
@@ -22,12 +23,13 @@ const WheelPicker: React.FC<WheelPickerProps> = ({
   const [isSpinning, setIsSpinning] = useState<boolean>(false);
   const spinValue = useRef(new Animated.Value(0)).current;
   const pulseValue = useRef(new Animated.Value(1)).current; // 脈動動畫值
+  const flashValue = useRef(new Animated.Value(0)).current; // 閃爍動畫值
   const [currentRotation, setCurrentRotation] = useState<number>(0); // 保持當前輪盤位置
 
   // 使用 useWheelCalculator Hook
   const { calculateSpin, calculateResult, getDebugInfo } = useWheelCalculator();
 
-  // 脈動動畫
+  // 脈動動畫和閃爍動畫
   React.useEffect(() => {
     if (!isSpinning) {
       const pulseAnimation = Animated.loop(
@@ -45,27 +47,48 @@ const WheelPicker: React.FC<WheelPickerProps> = ({
         ])
       );
       pulseAnimation.start();
+      flashValue.setValue(0);
       return () => pulseAnimation.stop();
     } else {
       pulseValue.setValue(1);
-      return undefined;
+      // 開始閃爍動畫
+      const flashAnimation = Animated.loop(
+        Animated.sequence([
+          Animated.timing(flashValue, {
+            toValue: 1,
+            duration: 200,
+            useNativeDriver: true,
+          }),
+          Animated.timing(flashValue, {
+            toValue: 0,
+            duration: 200,
+            useNativeDriver: true,
+          }),
+        ])
+      );
+      flashAnimation.start();
+      return () => flashAnimation.stop();
     }
-  }, [isSpinning, pulseValue]);
+  }, [isSpinning, pulseValue, flashValue]);
 
-  // 紫色調色板
+  // 紫色主題延伸配色板
   const colors: string[] = [
-    "#9e35e5",
-    "#7c3aed",
-    "#8b5cf6",
-    "#a855f7",
-    "#c084fc",
-    "#d8b4fe",
-    "#6366f1",
-    "#8b5cf6",
-    "#9333ea",
-    "#a78bfa",
-    "#c4b5fd",
-    "#e9d5ff",
+    "#9c27b0", // 深紫色
+    "#8e24aa", // 紫羅蘭
+    "#7b1fa2", // 皇家紫
+    "#673ab7", // 深紫羅蘭
+    "#5e35b1", // 靛紫色
+    "#512da8", // 深靛紫
+    "#4527a0", // 極深紫
+    "#311b92", // 午夜紫
+    "#6a1b9a", // 梅紫色
+    "#ad85c6", // 淡紫色
+    "#ba68c8", // 中紫色
+    "#ce93d8", // 淺紫粉
+    "#e1bee7", // 薰衣草紫
+    "#f3e5f5", // 極淺紫
+    "#9575cd", // 紫丁香
+    "#7986cb", // 藍紫色
   ];
 
   if (options.length === 0) {
@@ -134,19 +157,6 @@ const WheelPicker: React.FC<WheelPickerProps> = ({
     return angle;
   };
 
-  // 重置輪盤位置
-  const resetWheel = () => {
-    if (isSpinning) return;
-
-    Animated.timing(spinValue, {
-      toValue: 0,
-      duration: 1000,
-      useNativeDriver: true,
-    }).start(() => {
-      setCurrentRotation(0);
-    });
-  };
-
   // 旋轉動畫
   const spin = () => {
     if (isSpinning) return;
@@ -170,7 +180,8 @@ const WheelPicker: React.FC<WheelPickerProps> = ({
 
       Animated.timing(spinValue, {
         toValue: spinData.totalRotation,
-        duration: 3000,
+        duration: 12000, // 延長到 12 秒
+        easing: Easing.bezier(0.15, 0.7, 0.4, 0.95), // 更平滑的減速曲線
         useNativeDriver: true,
       }).start(() => {
         // 根據最終停止位置計算結果（0度指針位置決定）
@@ -269,15 +280,27 @@ const WheelPicker: React.FC<WheelPickerProps> = ({
           <TouchableOpacity
             style={[
               styles.centerCircle,
-              isSpinning && styles.centerCircleDisabled,
+              isSpinning && styles.centerCircleSpinning,
             ]}
             onPress={spin}
             disabled={isSpinning}
             activeOpacity={0.8}
           >
-            <Text style={styles.centerButtonText}>
-              {isSpinning ? "旋轉中" : "開始"}
-            </Text>
+            <Animated.View
+              style={[
+                styles.centerCircleInner,
+                isSpinning && {
+                  backgroundColor: flashValue.interpolate({
+                    inputRange: [0, 1],
+                    outputRange: ["#ff1744", "#ff6d00"], // 閃爍在亮紅色和橙色之間
+                  }),
+                },
+              ]}
+            >
+              <Text style={styles.centerButtonText}>
+                {isSpinning ? "旋轉中" : "開始"}
+              </Text>
+            </Animated.View>
           </TouchableOpacity>
         </Animated.View>
       </View>
@@ -319,15 +342,15 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 5,
     zIndex: 10,
-    backgroundColor: "#ff6b35", // 改為橘紅色
+    backgroundColor: "#e91e63", // 改為鮮艷的粉紅色
     borderRadius: 22, // 進一步增大指針圓角
     padding: 10, // 增大指針內邊距
-    shadowColor: "#ff6b35", // 陰影色也改為橘紅色
+    shadowColor: "#e91e63", // 陰影色也改為粉紅色
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.4,
-    shadowRadius: 8,
-    elevation: 8,
-    borderWidth: 2,
+    shadowOpacity: 0.5,
+    shadowRadius: 10,
+    elevation: 10,
+    borderWidth: 3,
     borderColor: "#ffffff",
   },
   pointerText: {
@@ -346,23 +369,29 @@ const styles = StyleSheet.create({
     width: 100, // 進一步增大中心按鈕
     height: 100,
     borderRadius: 50,
-    backgroundColor: "#ff6b35", // 使用更突出的橘紅色
+    backgroundColor: "#00e676", // 鮮艷的綠色
     alignItems: "center",
     justifyContent: "center",
-    borderWidth: 2, // 增加邊框寬度
+    borderWidth: 3, // 增加邊框寬度
     borderColor: "#ffffff",
-    shadowColor: "#ffb347",
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.5,
-    shadowRadius: 12,
-    elevation: 10,
-    // 添加內部陰影效果
+    shadowColor: "#00e676",
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.6,
+    shadowRadius: 15,
+    elevation: 12,
     overflow: "hidden",
   },
-  centerCircleDisabled: {
-    backgroundColor: "#ffb399", // 對應橘紅色的禁用狀態
-    opacity: 1,
-    shadowOpacity: 0.5, // 減少陰影
+  centerCircleSpinning: {
+    borderColor: "#ffff00", // 旋轉時邊框變成鮮黃色
+    borderWidth: 4,
+  },
+  centerCircleInner: {
+    width: "100%",
+    height: "100%",
+    borderRadius: 50,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "transparent",
   },
   centerText: {
     fontSize: 26, // 進一步增大表情符號大小
