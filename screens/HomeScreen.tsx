@@ -25,7 +25,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
       description: "多人投票，民主決定最終選擇",
       color: "#3b82f6",
       screen: "VotingDecision",
-      available: false,
+      available: true,
     },
     {
       id: "coin",

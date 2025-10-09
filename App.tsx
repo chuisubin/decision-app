@@ -6,6 +6,7 @@ import { StatusBar } from "expo-status-bar";
 
 import HomeScreen from "./screens/HomeScreen";
 import WheelDecisionScreen from "./screens/WheelDecisionScreen";
+import VotingDecisionScreen from "./screens/VotingDecisionScreen";
 import { RootStackParamList } from "./types/navigation";
 
 const Stack = createStackNavigator<RootStackParamList>();
@@ -33,6 +34,13 @@ function App(): React.ReactElement {
             component={WheelDecisionScreen}
             options={{
               title: "輪盤決策",
+            }}
+          />
+          <Stack.Screen
+            name="VotingDecision"
+            component={VotingDecisionScreen}
+            options={{
+              title: "投票決策",
             }}
           />
         </Stack.Navigator>
