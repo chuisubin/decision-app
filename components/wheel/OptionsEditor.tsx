@@ -25,6 +25,7 @@ const OptionsEditor: React.FC<OptionsEditorProps> = ({
   onSave,
 }) => {
   const [localOptions, setLocalOptions] = useState<string[]>(options);
+  const scrollViewRef = React.useRef<ScrollView>(null);
 
   // 當 visible 變化時，重置本地選項
   React.useEffect(() => {
@@ -69,6 +70,17 @@ const OptionsEditor: React.FC<OptionsEditorProps> = ({
     onClose();
   };
 
+  const handleInputFocus = (index: number) => {
+    // 延遲執行以確保鍵盤已完全顯示
+    setTimeout(() => {
+      const inputY = (index + 1) * 80; // 估算每個輸入框的位置
+      scrollViewRef.current?.scrollTo({
+        y: inputY,
+        animated: true,
+      });
+    }, 300);
+  };
+
   return (
     <Modal
       visible={visible}
@@ -79,7 +91,7 @@ const OptionsEditor: React.FC<OptionsEditorProps> = ({
       <KeyboardAvoidingView
         style={styles.container}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
-        keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 20}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 100 : 20}
       >
         {/* Header */}
         <View style={styles.header}>
@@ -94,9 +106,11 @@ const OptionsEditor: React.FC<OptionsEditorProps> = ({
 
         {/* Content */}
         <ScrollView
+          ref={scrollViewRef}
           style={styles.content}
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
+          contentContainerStyle={{ paddingBottom: 100 }}
         >
           <Text style={styles.hint}>編輯您的選項，每個選項會出現在輪盤上</Text>
 
@@ -107,6 +121,7 @@ const OptionsEditor: React.FC<OptionsEditorProps> = ({
                 placeholder={`選項 ${index + 1}`}
                 value={option}
                 onChangeText={(value) => updateOption(index, value)}
+                onFocus={() => handleInputFocus(index)}
                 returnKeyType="done"
                 multiline={false}
               />

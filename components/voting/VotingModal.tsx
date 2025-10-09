@@ -41,8 +41,8 @@ const VotingModal: React.FC<VotingModalProps> = ({
   useEffect(() => {
     if (visible) {
       setCurrentVoter(1);
-      setVotes({});
       setVotingStage("voting");
+      setSelectedOption(null);
 
       // 初始化投票結果
       const initialVotes: VoteResults = {};
@@ -95,7 +95,10 @@ const VotingModal: React.FC<VotingModalProps> = ({
   };
 
   const getWinningOptions = (): string[] => {
-    const maxVotes = Math.max(...Object.values(votes));
+    const voteValues = Object.values(votes);
+    if (voteValues.length === 0) return [];
+    const maxVotes = Math.max(...voteValues);
+    if (maxVotes === 0) return [];
     return Object.keys(votes).filter((option) => votes[option] === maxVotes);
   };
 
@@ -119,6 +122,22 @@ const VotingModal: React.FC<VotingModalProps> = ({
 
   const renderVotingStage = () => (
     <Animated.View style={[styles.modalContent, { opacity: fadeAnim }]}>
+      {/* Close Button */}
+      <TouchableOpacity
+        style={{
+          position: "absolute",
+          right: 15,
+          top: 15,
+          zIndex: 1000,
+          padding: 8,
+          borderRadius: 20,
+          backgroundColor: "#f3f4f6",
+        }}
+        onPress={handleClose}
+      >
+        <Text style={{ fontSize: 18, color: "#6b7280" }}>✕</Text>
+      </TouchableOpacity>
+
       {/* Header */}
       <View style={styles.modalHeader}>
         <Text style={styles.modalTitle}>🗳️ 投票進行中</Text>
@@ -231,7 +250,7 @@ const VotingModal: React.FC<VotingModalProps> = ({
               },
             ]}
           >
-            取消投票
+            取消選擇
           </Text>
         </TouchableOpacity>
       </View>
@@ -245,8 +264,36 @@ const VotingModal: React.FC<VotingModalProps> = ({
       0
     );
 
+    // 調試信息
+    console.log("votes:", votes);
+    console.log("totalVotes:", totalVotes);
+    console.log("options:", options);
+
+    // 只顯示有票數的選項
+    const votedOptions = options
+      .filter((option) => votes[option] > 0)
+      .sort((a, b) => votes[b] - votes[a]);
+
+    console.log("votedOptions:", votedOptions);
+
     return (
       <Animated.View style={[styles.modalContent, { opacity: fadeAnim }]}>
+        {/* Close Button */}
+        <TouchableOpacity
+          style={{
+            position: "absolute",
+            right: 15,
+            top: 15,
+            zIndex: 1000,
+            padding: 8,
+            borderRadius: 20,
+            backgroundColor: "#f3f4f6",
+          }}
+          onPress={handleClose}
+        >
+          <Text style={{ fontSize: 18, color: "#6b7280" }}>✕</Text>
+        </TouchableOpacity>
+
         {/* Header */}
         <View style={styles.modalHeader}>
           <Text style={styles.modalTitle}>🏆 投票結果</Text>
@@ -254,68 +301,117 @@ const VotingModal: React.FC<VotingModalProps> = ({
           <Text style={styles.totalVotesText}>總票數: {totalVotes} 票</Text>
         </View>
 
-        {/* Winner Announcement */}
-        <View style={styles.winnerSection}>
-          {winningOptions.length === 1 ? (
-            <View style={styles.singleWinner}>
-              <Text style={styles.winnerIcon}>🥇</Text>
-              <Text style={styles.winnerText}>{winningOptions[0]}</Text>
-              <Text style={styles.winnerVotes}>
-                {votes[winningOptions[0]]} 票 (
-                {getVotePercentage(winningOptions[0])}%)
-              </Text>
-            </View>
-          ) : (
-            <View style={styles.tieWinner}>
-              <Text style={styles.tieIcon}>🤝</Text>
-              <Text style={styles.tieTitle}>平手！</Text>
-              <Text style={styles.tieSubtitle}>以下選項得票相同：</Text>
-              {winningOptions.map((option, index) => (
-                <Text key={index} style={styles.tieOption}>
-                  {option} - {votes[option]} 票
-                </Text>
-              ))}
-            </View>
-          )}
-        </View>
-
-        {/* Detailed Results */}
-        <View style={styles.resultsContainer}>
-          <Text style={styles.resultsTitle}>詳細結果</Text>
+        {/* Integrated Results */}
+        <View style={{ paddingHorizontal: 20, paddingVertical: 10 }}>
           <ScrollView
-            style={styles.resultsScrollView}
+            style={{ height: 300 }}
             showsVerticalScrollIndicator={false}
           >
-            {options
-              .sort((a, b) => votes[b] - votes[a])
-              .map((option, index) => (
-                <View key={index} style={styles.resultItem}>
-                  <View style={styles.resultInfo}>
-                    <View style={styles.optionNameContainer}>
-                      <Text style={styles.resultRank}>#{index + 1}</Text>
-                      <Text style={styles.resultOptionText}>{option}</Text>
-                    </View>
-                    <View style={styles.voteCountContainer}>
-                      <Text style={styles.resultVoteCount}>
-                        {votes[option]}
-                      </Text>
-                      <Text style={styles.resultVoteLabel}>票</Text>
-                      <Text style={styles.resultPercentage}>
-                        ({getVotePercentage(option)}%)
-                      </Text>
-                    </View>
-                  </View>
-                  <View style={styles.resultBarContainer}>
+            {votedOptions.length > 0 ? (
+              votedOptions.map((option, index) => {
+                const isWinner = winningOptions.includes(option);
+                const voteCount = votes[option];
+                const percentage = getVotePercentage(option);
+
+                return (
+                  <View
+                    key={index}
+                    style={{
+                      backgroundColor: "#ffffff",
+                      borderRadius: 12,
+                      padding: 15,
+                      marginBottom: 10,
+                      borderWidth: 1,
+                      borderColor: isWinner ? "#10b981" : "#e5e7eb",
+                      shadowColor: "#000",
+                      shadowOffset: { width: 0, height: 2 },
+                      shadowOpacity: 0.1,
+                      shadowRadius: 4,
+                      elevation: 2,
+                    }}
+                  >
                     <View
-                      style={[
-                        styles.resultBar,
-                        { width: `${getVotePercentage(option)}%` },
-                        winningOptions.includes(option) && styles.winnerBar,
-                      ]}
-                    />
+                      style={{
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                      }}
+                    >
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          alignItems: "center",
+                          flex: 1,
+                        }}
+                      >
+                        <Text style={{ fontSize: 20, marginRight: 10 }}>
+                          {isWinner
+                            ? index === 0 && winningOptions.length === 1
+                              ? "🥇"
+                              : "🤝"
+                            : `#${index + 1}`}
+                        </Text>
+                        <Text
+                          style={{
+                            fontSize: 16,
+                            flex: 1,
+                            fontWeight: isWinner ? "700" : "500",
+                            color: isWinner ? "#059669" : "#374151",
+                          }}
+                        >
+                          {option}
+                          {isWinner && winningOptions.length > 1 && " (平手)"}
+                        </Text>
+                      </View>
+                      <View style={{ alignItems: "flex-end" }}>
+                        <Text
+                          style={{
+                            fontSize: 18,
+                            fontWeight: isWinner ? "700" : "600",
+                            color: isWinner ? "#059669" : "#374151",
+                          }}
+                        >
+                          {voteCount} 票
+                        </Text>
+                        <Text
+                          style={{
+                            fontSize: 14,
+                            fontWeight: isWinner ? "600" : "400",
+                            color: isWinner ? "#059669" : "#6b7280",
+                          }}
+                        >
+                          ({percentage}%)
+                        </Text>
+                      </View>
+                    </View>
+                    <View
+                      style={{
+                        height: 4,
+                        backgroundColor: "#f3f4f6",
+                        borderRadius: 2,
+                        marginTop: 10,
+                        overflow: "hidden",
+                      }}
+                    >
+                      <View
+                        style={{
+                          height: "100%",
+                          width: `${percentage}%`,
+                          backgroundColor: isWinner ? "#10b981" : "#3b82f6",
+                          borderRadius: 2,
+                        }}
+                      />
+                    </View>
                   </View>
-                </View>
-              ))}
+                );
+              })
+            ) : (
+              <View style={{ alignItems: "center", padding: 20 }}>
+                <Text style={{ fontSize: 16, color: "#6b7280" }}>
+                  沒有任何投票記錄
+                </Text>
+              </View>
+            )}
           </ScrollView>
         </View>
 

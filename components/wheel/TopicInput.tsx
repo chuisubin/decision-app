@@ -1,83 +1,11 @@
 import React, { useState } from "react";
 import { Text, View, TextInput, TouchableOpacity } from "react-native";
 import { styles } from "../../styles/TopicInputStyles";
-import { PresetOptions, TopicInputProps } from "../../types";
-
-// 預設選項分類
-const presetOptions: PresetOptions = {
-  午餐: [
-    "炒飯",
-    "麵條",
-    "便當",
-    "披薩",
-    "漢堡",
-    "沙拉",
-    "三明治",
-    "湯麵",
-    "火鍋",
-    "壽司",
-  ],
-  晚餐: [
-    "火鍋",
-    "燒烤",
-    "義大利麵",
-    "牛排",
-    "中式熱炒",
-    "日式料理",
-    "韓式料理",
-    "泰式料理",
-    "印度料理",
-    "素食",
-  ],
-  飲料: [
-    "咖啡",
-    "奶茶",
-    "果汁",
-    "汽水",
-    "開水",
-    "綠茶",
-    "烏龍茶",
-    "檸檬水",
-    "椰子水",
-    "氣泡水",
-  ],
-  娛樂: [
-    "看電影",
-    "逛街",
-    "打遊戲",
-    "運動",
-    "讀書",
-    "聽音樂",
-    "畫畫",
-    "散步",
-    "聊天",
-    "睡覺",
-  ],
-  交通: [
-    "走路",
-    "騎車",
-    "開車",
-    "搭公車",
-    "搭捷運",
-    "搭計程車",
-    "搭火車",
-    "騎機車",
-    "滑板車",
-    "跑步",
-  ],
-  穿搭: [
-    "休閒服",
-    "正式服裝",
-    "運動服",
-    "連身裙",
-    "牛仔褲",
-    "T恤",
-    "襯衫",
-    "外套",
-    "短褲",
-    "裙子",
-  ],
-};
+import { TopicInputProps } from "../../types";
+import {
+  presetOptions,
+  getCategoryDisplayNames,
+} from "../../data/presetOptions";
 
 const TopicInput: React.FC<TopicInputProps> = ({
   topic,
@@ -100,13 +28,13 @@ const TopicInput: React.FC<TopicInputProps> = ({
       onTopicChange(inputValue.trim());
       setIsConfirmed(true);
 
-      // 檢查是否匹配預設分類
-      const matchedCategory = Object.keys(presetOptions).find(
-        (category) =>
-          inputValue.toLowerCase().includes(category) ||
-          category.includes(inputValue.toLowerCase())
+      // 檢查是否匹配預設分類（根據中文顯示名稱）
+      const matchedDisplayName = getCategoryDisplayNames().find(
+        (displayName) =>
+          inputValue.toLowerCase().includes(displayName) ||
+          displayName.includes(inputValue.toLowerCase())
       );
-      onCategoryMatch(matchedCategory || null);
+      onCategoryMatch(matchedDisplayName || null);
     }
   };
 
@@ -171,13 +99,13 @@ const TopicInput: React.FC<TopicInputProps> = ({
       <View style={styles.presetContainer}>
         <Text style={styles.presetTitle}>💡 快速選擇</Text>
         <View style={styles.categoryContainer}>
-          {Object.keys(presetOptions).map((category, index) => (
+          {getCategoryDisplayNames().map((displayName, index) => (
             <TouchableOpacity
               key={index}
               style={styles.categoryTag}
-              onPress={() => selectPresetTopic(category)}
+              onPress={() => selectPresetTopic(displayName)}
             >
-              <Text style={styles.categoryText}>{category}</Text>
+              <Text style={styles.categoryText}>{displayName}</Text>
             </TouchableOpacity>
           ))}
         </View>

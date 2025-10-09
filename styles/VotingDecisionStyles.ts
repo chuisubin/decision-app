@@ -18,14 +18,14 @@ export const styles = StyleSheet.create({
 
   // Topic Section
   topicSection: {
-    marginBottom: 20,
+    marginTop: 20,
   },
   sectionTitle: {
     fontSize: 16,
     fontWeight: "600",
     color: "#333",
     marginBottom: 12,
-    textAlign: "center",
+    textAlign: "left",
   },
 
   // Voter Count Section

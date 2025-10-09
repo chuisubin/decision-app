@@ -18,87 +18,15 @@ import WheelPicker from "../components/wheel/WheelPicker";
 import Collapsible from "../components/Collapsible";
 import TopicInput from "../components/wheel/TopicInput";
 import OptionsEditor from "../components/wheel/OptionsEditor";
-import { PresetOptions } from "../types";
+import {
+  presetOptions,
+  getCategoryKeyByDisplayName,
+  getOptionsByKey,
+} from "../data/presetOptions";
 
 interface WheelDecisionScreenProps {
   navigation: NavigationProp<any>;
 }
-
-// 預設選項分類
-const presetOptions: PresetOptions = {
-  午餐: [
-    "炒飯",
-    "麵條",
-    "便當",
-    "披薩",
-    "漢堡",
-    "沙拉",
-    "三明治",
-    "湯麵",
-    "火鍋",
-    "壽司",
-  ],
-  晚餐: [
-    "火鍋",
-    "燒烤",
-    "義大利麵",
-    "牛排",
-    "中式熱炒",
-    "日式料理",
-    "韓式料理",
-    "泰式料理",
-    "印度料理",
-    "素食",
-  ],
-  飲料: [
-    "咖啡",
-    "奶茶",
-    "果汁",
-    "汽水",
-    "開水",
-    "綠茶",
-    "烏龍茶",
-    "檸檬水",
-    "椰子水",
-    "氣泡水",
-  ],
-  娛樂: [
-    "看電影",
-    "逛街",
-    "打遊戲",
-    "運動",
-    "讀書",
-    "聽音樂",
-    "畫畫",
-    "散步",
-    "聊天",
-    "睡覺",
-  ],
-  交通: [
-    "走路",
-    "騎車",
-    "開車",
-    "搭公車",
-    "搭捷運",
-    "搭計程車",
-    "搭火車",
-    "騎機車",
-    "滑板車",
-    "跑步",
-  ],
-  穿搭: [
-    "休閒服",
-    "正式服裝",
-    "運動服",
-    "連身裙",
-    "牛仔褲",
-    "T恤",
-    "襯衫",
-    "外套",
-    "短褲",
-    "裙子",
-  ],
-};
 
 const WheelDecisionScreen: React.FC<WheelDecisionScreenProps> = ({
   navigation,
@@ -192,27 +120,35 @@ const WheelDecisionScreen: React.FC<WheelDecisionScreenProps> = ({
               topic={topic}
               onTopicChange={(text) => {
                 setTopic(text);
-                // 檢查是否匹配預設主題
-                const matchedCategory = Object.keys(presetOptions).find(
-                  (category) =>
-                    text.toLowerCase().includes(category) ||
-                    category.includes(text.toLowerCase())
-                );
-                setSelectedPresetCategory(matchedCategory || null);
+                // 檢查是否匹配預設主題（根據中文顯示名稱或英文 key）
+                const matchedKey = Object.keys(presetOptions).find((key) => {
+                  const category = presetOptions[key];
+                  return (
+                    text.toLowerCase().includes(category.displayName) ||
+                    category.displayName.includes(text.toLowerCase()) ||
+                    text.toLowerCase().includes(key) ||
+                    key.includes(text.toLowerCase())
+                  );
+                });
+                setSelectedPresetCategory(matchedKey || null);
 
                 // 如果匹配到預設分類，自動填入選項
-                if (matchedCategory && presetOptions[matchedCategory]) {
-                  setCustomOptions(presetOptions[matchedCategory]);
+                if (matchedKey && presetOptions[matchedKey]) {
+                  setCustomOptions(presetOptions[matchedKey].options);
                 } else {
                   // 如果沒有匹配到預設分類，重置為空選項
                   setCustomOptions([""]);
                 }
               }}
               onCategoryMatch={(category) => {
-                setSelectedPresetCategory(category);
-                // 當直接選擇分類時也要填入選項
-                if (category && presetOptions[category]) {
-                  setCustomOptions(presetOptions[category]);
+                // category 現在是中文顯示名稱，需要轉換為 key
+                if (category) {
+                  const categoryKey = getCategoryKeyByDisplayName(category);
+                  setSelectedPresetCategory(categoryKey);
+                  // 當直接選擇分類時也要填入選項
+                  if (categoryKey) {
+                    setCustomOptions(getOptionsByKey(categoryKey));
+                  }
                 }
               }}
             />
