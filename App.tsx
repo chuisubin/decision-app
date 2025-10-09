@@ -7,6 +7,7 @@ import { StatusBar } from "expo-status-bar";
 import HomeScreen from "./screens/HomeScreen";
 import WheelDecisionScreen from "./screens/WheelDecisionScreen";
 import VotingDecisionScreen from "./screens/VotingDecisionScreen";
+import CompetitionDecisionScreen from "./screens/CompetitionDecisionScreen";
 import { RootStackParamList } from "./types/navigation";
 
 const Stack = createStackNavigator<RootStackParamList>();
@@ -41,6 +42,13 @@ function App(): React.ReactElement {
             component={VotingDecisionScreen}
             options={{
               title: "投票決策",
+            }}
+          />
+          <Stack.Screen
+            name="CompetitionDecision"
+            component={CompetitionDecisionScreen}
+            options={{
+              title: "比賽決策",
             }}
           />
         </Stack.Navigator>

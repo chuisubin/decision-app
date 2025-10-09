@@ -3,6 +3,13 @@ export interface PresetOptions {
   [key: string]: string[];
 }
 
+// 比賽玩家結果類型
+export interface PlayerResult {
+  name: string;
+  time: number;
+  difference: number;
+}
+
 // 主題輸入組件 Props
 export interface TopicInputProps {
   topic: string;

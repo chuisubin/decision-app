@@ -27,6 +27,14 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
       screen: "VotingDecision",
       available: true,
     },
+    {
+      id: "competition",
+      title: "⏱️ 比賽決策",
+      description: "計時器比賽，最接近10秒者獲勝",
+      color: "#f59e0b",
+      screen: "CompetitionDecision",
+      available: true,
+    },
     // {
     //   id: "proscons",
     //   title: "📊 優缺點列表",
