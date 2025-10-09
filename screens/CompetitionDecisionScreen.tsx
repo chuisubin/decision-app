@@ -208,8 +208,6 @@ const CompetitionDecisionScreen: React.FC<Props> = ({ navigation }) => {
     </KeyboardAvoidingView>
   );
 
-  console.log("Participants:", participants);
-
   return (
     <>
       <SafeAreaView style={styles.container}>
