@@ -13,7 +13,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   const decisionMethods = [
     {
       id: "wheel",
-      title: "🎡 輪盤決策",
+      title: "🎡 輪盤話事",
       description: "旋轉輪盤，讓命運為你做決定",
       color: "#9e35e5",
       screen: "WheelDecision",
@@ -21,7 +21,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
     },
     {
       id: "voting",
-      title: "🗳️ 投票決策",
+      title: "🗳️ 投票話事",
       description: "多人投票，民主決定最終選擇",
       color: "#3b82f6",
       screen: "VotingDecision",
@@ -29,7 +29,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
     },
     {
       id: "competition",
-      title: "⏱️ 比賽決策",
+      title: "⏱️ 比賽話事",
       description: "計時器比賽，最接近10秒者獲勝",
       color: "#f59e0b",
       screen: "CompetitionDecision",
@@ -76,8 +76,8 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
             source={require("../assets/icon.png")}
             style={styles.headerImage}
           />
-          <Text style={styles.title}>決策小助手</Text>
-          <Text style={styles.subtitle}>選擇困難症的終極解決方案</Text>
+          <Text style={styles.title}>話得事嘅APP</Text>
+          <Text style={styles.subtitle}>選擇困難症嘅終極解決方案</Text>
         </View>
 
         <View style={styles.methodsContainer}>
@@ -129,7 +129,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
 
         {/* Footer */}
         <View style={styles.footer}>
-          <Text style={styles.footerText}>更多決策方法正在開發中...</Text>
+          <Text style={styles.footerText}>更多方法正在開發中...</Text>
           {__DEV__ && (
             <Text style={styles.versionText}>v{packageJson.version}</Text>
           )}

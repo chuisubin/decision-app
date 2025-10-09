@@ -98,7 +98,7 @@ const VotingDecisionScreen: React.FC<VotingDecisionScreenProps> = ({
       {/* Header */}
       <DecisionHeader
         navigation={navigation}
-        title="🗳️ 投票決策"
+        title="🗳️ 投票話事"
         subtitle="多人投票，民主決定最終選擇"
       />
 

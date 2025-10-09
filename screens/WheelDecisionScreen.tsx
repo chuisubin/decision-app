@@ -95,7 +95,7 @@ const WheelDecisionScreen: React.FC<WheelDecisionScreenProps> = ({
           <Text style={styles.backButtonText}>←</Text>
         </TouchableOpacity>
         <View style={styles.titleContainer}>
-          <Text style={styles.title}>🎡 輪盤決策</Text>
+          <Text style={styles.title}>🎡 輪盤話事</Text>
           <Text style={styles.subtitle}>讓輪盤為你做決定！</Text>
         </View>
         <View style={styles.headerRightSpace} />

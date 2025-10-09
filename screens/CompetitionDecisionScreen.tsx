@@ -216,7 +216,7 @@ const CompetitionDecisionScreen: React.FC<Props> = ({ navigation }) => {
         {/* Header */}
         <DecisionHeader
           navigation={navigation}
-          title="⏱️ 比賽決策"
+          title="⏱️ 比賽話事"
           subtitle="計時比賽，最接近目標時間的人獲勝"
         />
 

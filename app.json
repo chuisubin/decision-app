@@ -1,13 +1,13 @@
 {
   "expo": {
-    "name": "決策小助手",
+    "name": "話得事嘅APP",
     "slug": "decision-app",
-    "version": "1.3.0",
+    "version": "1.4.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
-    "description": "一個簡單易用的決策小助手，幫助您在日常生活中做出選擇。支援多種預設主題和自定義選項。",
+    "description": "一班選擇困難症，唔想話事，話唔到事嘅人！呢個APP幫你輕鬆做決定，無論係食乜、去邊、玩咩，全部一鍵搞掂！",
     "privacy": "public",
     "platforms": ["ios", "android"],
     "splash": {
@@ -18,10 +18,10 @@
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "com.gglababy.decisionapp",
-      "buildNumber": "3",
+      "buildNumber": "4",
       "infoPlist": {
-        "CFBundleDisplayName": "決策小助手",
-        "CFBundleName": "決策小助手",
+        "CFBundleDisplayName": "話得事嘅APP",
+        "CFBundleName": "話得事嘅APP",
         "ITSAppUsesNonExemptEncryption": false
       }
     },

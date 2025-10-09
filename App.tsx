@@ -34,21 +34,21 @@ function App(): React.ReactElement {
             name="WheelDecision"
             component={WheelDecisionScreen}
             options={{
-              title: "輪盤決策",
+              title: "輪盤話事",
             }}
           />
           <Stack.Screen
             name="VotingDecision"
             component={VotingDecisionScreen}
             options={{
-              title: "投票決策",
+              title: "投票話事",
             }}
           />
           <Stack.Screen
             name="CompetitionDecision"
             component={CompetitionDecisionScreen}
             options={{
-              title: "比賽決策",
+              title: "比賽話事",
             }}
           />
         </Stack.Navigator>
