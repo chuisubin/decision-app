@@ -118,7 +118,7 @@ const CompetitionDecisionScreen: React.FC<Props> = ({ navigation }) => {
         <Collapsible
           title="難度設定"
           icon="⚡"
-          isInitiallyCollapsed={false}
+          isInitiallyCollapsed={true}
           containerStyle={styles.collapsibleContainer}
         >
           <View style={styles.difficultyContainer}>

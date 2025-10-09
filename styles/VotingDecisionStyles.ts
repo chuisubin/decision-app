@@ -5,7 +5,7 @@ const { width: screenWidth } = Dimensions.get("window");
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f5f5f5",
+    backgroundColor: "#f8f4ff", // 淺紫色背景
   },
   keyboardAvoidingView: {
     flex: 1,
@@ -104,7 +104,7 @@ export const styles = StyleSheet.create({
   optionsButtonTitle: {
     fontSize: 16,
     fontWeight: "600",
-    color: "#333",
+    color: "#222",
     marginBottom: 2,
   },
   optionsButtonSubtitle: {

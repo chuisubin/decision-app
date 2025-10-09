@@ -4,7 +4,7 @@ export const styles = StyleSheet.create({
   // 主容器樣式
   container: {
     flex: 1,
-    backgroundColor: "#f5f5f5",
+    backgroundColor: "#f8f4ff", // 淺紫色背景
   },
   scrollContainer: {
     flex: 1,

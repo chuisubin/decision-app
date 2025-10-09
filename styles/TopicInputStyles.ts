@@ -55,7 +55,7 @@ export const styles = StyleSheet.create({
   presetTitle: {
     fontSize: 16,
     fontWeight: "600",
-    color: "#9e35e5",
+    color: "#222",
     marginBottom: 5,
   },
   presetHint: {
@@ -101,14 +101,10 @@ export const styles = StyleSheet.create({
   topicText: {
     fontSize: 16,
     fontWeight: "600",
-    color: "#9e35e5",
+    color: "#222",
     marginBottom: 5,
   },
-  editHint: {
-    fontSize: 12,
-    color: "#6b7280",
-    fontStyle: "italic",
-  },
+
   editButton: {
     backgroundColor: "#f3f4f6",
     borderRadius: 8,

@@ -191,7 +191,7 @@ export const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 18,
     fontWeight: "600",
-    color: "#9e35e5",
+    color: "#222",
     marginBottom: 12,
     textAlign: "left",
   },
@@ -226,10 +226,10 @@ export const styles = StyleSheet.create({
     flex: 1,
   },
   optionsButtonTitle: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: "600",
-    color: "#9e35e5",
-    marginBottom: 4,
+    color: "#222",
+    marginBottom: 2,
   },
   optionsButtonSubtitle: {
     fontSize: 14,
