@@ -139,6 +139,12 @@ export const styles = StyleSheet.create({
     color: "white",
     fontSize: 18,
     fontWeight: "bold",
+    marginBottom: 2,
+  },
+  startVotingSubText: {
+    color: "rgba(255, 255, 255, 0.8)",
+    fontSize: 12,
+    fontWeight: "500",
   },
   votingPlaceholder: {
     backgroundColor: "#f3f4f6",
@@ -161,5 +167,12 @@ export const styles = StyleSheet.create({
     color: "#6b7280",
     fontSize: 13,
     textAlign: "center",
+  },
+  votesPerPersonHint: {
+    color: "#6b7280",
+    fontSize: 12,
+    textAlign: "center",
+    marginTop: 8,
+    fontStyle: "italic",
   },
 });

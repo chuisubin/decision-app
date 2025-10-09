@@ -32,6 +32,7 @@ const VotingDecisionScreen: React.FC<VotingDecisionScreenProps> = ({
   const [topic, setTopic] = useState<string>("");
   const [customOptions, setCustomOptions] = useState<string[]>([""]);
   const [voterCount, setVoterCount] = useState<string>("");
+  const [votesPerPerson, setVotesPerPerson] = useState<number>(1);
   const [selectedPresetCategory, setSelectedPresetCategory] = useState<
     string | null
   >(null);
@@ -47,6 +48,14 @@ const VotingDecisionScreen: React.FC<VotingDecisionScreenProps> = ({
       .filter((option) => option);
 
     return customOptionsFiltered.length > 0 ? customOptionsFiltered : [];
+  };
+
+  // 獲取每人最大票數（最多3票，且不能等於選項數）
+  const getMaxVotesPerPerson = (): number => {
+    const options = getCurrentOptions();
+    const maxByOptions = options.length - 1; // 選項數-1
+    const maxByLimit = 3; // 固定上限3票
+    return Math.max(1, Math.min(maxByOptions, maxByLimit));
   };
 
   const handleOptionsUpdate = (newOptions: string[]): void => {
@@ -179,6 +188,45 @@ const VotingDecisionScreen: React.FC<VotingDecisionScreenProps> = ({
             </View>
           )}
 
+          {/* 每人票數設定 */}
+          {topic.trim() && getCurrentOptions().length >= 2 && (
+            <View style={styles.voterCountSection}>
+              <Text style={styles.sectionTitle}>🗳️ 設定每人票數</Text>
+              <View style={styles.voterCountContainer}>
+                <Text style={styles.voterCountLabel}>每人票數:</Text>
+                <View style={styles.voterCountInputContainer}>
+                  <TouchableOpacity
+                    style={styles.countButton}
+                    onPress={() => {
+                      if (votesPerPerson > 1) {
+                        setVotesPerPerson(votesPerPerson - 1);
+                      }
+                    }}
+                  >
+                    <Text style={styles.countButtonText}>-</Text>
+                  </TouchableOpacity>
+                  <Text style={styles.voterCountDisplay}>
+                    {votesPerPerson} 票
+                  </Text>
+                  <TouchableOpacity
+                    style={styles.countButton}
+                    onPress={() => {
+                      const maxVotes = getMaxVotesPerPerson();
+                      if (votesPerPerson < maxVotes) {
+                        setVotesPerPerson(votesPerPerson + 1);
+                      }
+                    }}
+                  >
+                    <Text style={styles.countButtonText}>+</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+              <Text style={styles.votesPerPersonHint}>
+                最多 {getMaxVotesPerPerson()} 票（上限3票，且小於選項數）
+              </Text>
+            </View>
+          )}
+
           {/* 選項設定區域 */}
           {topic.trim() && (
             <View style={styles.optionsSection}>
@@ -214,6 +262,9 @@ const VotingDecisionScreen: React.FC<VotingDecisionScreenProps> = ({
                   <Text style={styles.startVotingButtonText}>
                     🗳️ 開始 {voterCount} 人投票
                   </Text>
+                  <Text style={styles.startVotingSubText}>
+                    每人可投 {votesPerPerson} 票
+                  </Text>
                 </TouchableOpacity>
               ) : (
                 <View style={styles.votingPlaceholder}>
@@ -244,6 +295,7 @@ const VotingDecisionScreen: React.FC<VotingDecisionScreenProps> = ({
         topic={topic}
         options={getCurrentOptions()}
         voterCount={parseInt(voterCount)}
+        votesPerPerson={votesPerPerson}
         onClose={() => setShowVotingModal(false)}
       />
     </SafeAreaView>

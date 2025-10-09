@@ -15,6 +15,7 @@ interface VotingModalProps {
   topic: string;
   options: string[];
   voterCount: number;
+  votesPerPerson: number;
   onClose: () => void;
 }
 
@@ -27,6 +28,7 @@ const VotingModal: React.FC<VotingModalProps> = ({
   topic,
   options,
   voterCount,
+  votesPerPerson,
   onClose,
 }) => {
   const [currentVoter, setCurrentVoter] = useState<number>(1);
@@ -35,14 +37,16 @@ const VotingModal: React.FC<VotingModalProps> = ({
     "voting"
   );
   const [fadeAnim] = useState(new Animated.Value(0));
-  const [selectedOption, setSelectedOption] = useState<string | null>(null);
+  const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
+  const [currentVoterVotes, setCurrentVoterVotes] = useState<number>(0);
 
   // 重置狀態
   useEffect(() => {
     if (visible) {
       setCurrentVoter(1);
       setVotingStage("voting");
-      setSelectedOption(null);
+      setSelectedOptions([]);
+      setCurrentVoterVotes(0);
 
       // 初始化投票結果
       const initialVotes: VoteResults = {};
@@ -63,21 +67,37 @@ const VotingModal: React.FC<VotingModalProps> = ({
   }, [visible, options]);
 
   const handleOptionSelect = (option: string) => {
-    // 如果已經選中相同選項，則取消選擇；否則選擇新選項
-    setSelectedOption(selectedOption === option ? null : option);
+    // 檢查是否已經選中該選項
+    const isSelected = selectedOptions.includes(option);
+
+    if (isSelected) {
+      // 取消選擇
+      setSelectedOptions((prev) => prev.filter((opt) => opt !== option));
+      setCurrentVoterVotes((prev) => prev - 1);
+    } else {
+      // 檢查是否還能選擇更多選項
+      if (currentVoterVotes < votesPerPerson) {
+        setSelectedOptions((prev) => [...prev, option]);
+        setCurrentVoterVotes((prev) => prev + 1);
+      }
+    }
   };
 
   const handleConfirmVote = () => {
-    if (!selectedOption) return;
+    if (selectedOptions.length === 0) return;
 
     // 更新投票結果
-    setVotes((prev) => ({
-      ...prev,
-      [selectedOption]: prev[selectedOption] + 1,
-    }));
+    setVotes((prev) => {
+      const newVotes = { ...prev };
+      selectedOptions.forEach((option) => {
+        newVotes[option] = (newVotes[option] || 0) + 1;
+      });
+      return newVotes;
+    });
 
-    // 清除選擇
-    setSelectedOption(null);
+    // 清除當前投票者的選擇
+    setSelectedOptions([]);
+    setCurrentVoterVotes(0);
 
     if (currentVoter < voterCount) {
       // 還有下一位投票者
@@ -91,7 +111,8 @@ const VotingModal: React.FC<VotingModalProps> = ({
   };
 
   const handleCancelSelection = () => {
-    setSelectedOption(null);
+    setSelectedOptions([]);
+    setCurrentVoterVotes(0);
   };
 
   const getWinningOptions = (): string[] => {
@@ -143,11 +164,14 @@ const VotingModal: React.FC<VotingModalProps> = ({
         <Text style={styles.modalTitle}>🗳️ 投票進行中</Text>
         <Text style={styles.topicText}>{topic}</Text>
         <Text style={styles.totalVotesText}>
-          共 {options.length} 個選項可選
+          共 {options.length} 個選項可選 • 每人可投 {votesPerPerson} 票
         </Text>
         <View style={styles.voterProgress}>
           <Text style={styles.voterProgressText}>
             第 {currentVoter} 位投票者 ({currentVoter}/{voterCount})
+          </Text>
+          <Text style={styles.voteCountText}>
+            已選 {currentVoterVotes}/{votesPerPerson} 票
           </Text>
           <View style={styles.progressBar}>
             <View
@@ -165,35 +189,56 @@ const VotingModal: React.FC<VotingModalProps> = ({
         style={styles.optionsContainer}
         showsVerticalScrollIndicator={false}
       >
-        {options.map((option, index) => (
-          <TouchableOpacity
-            key={index}
-            style={[
-              styles.voteOption,
-              selectedOption === option && {
-                backgroundColor: "#f0fdf4",
-                borderColor: "#10b981",
-              },
-            ]}
-            onPress={() => handleOptionSelect(option)}
-            activeOpacity={0.7}
-          >
-            <Text
+        {options.map((option, index) => {
+          const isSelected = selectedOptions.includes(option);
+          const canSelectMore = currentVoterVotes < votesPerPerson;
+          const isDisabled = !isSelected && !canSelectMore;
+
+          return (
+            <TouchableOpacity
+              key={index}
               style={[
-                styles.voteOptionText,
-                selectedOption === option && {
-                  color: "#059669",
-                  fontWeight: "600",
+                styles.voteOption,
+                isSelected && {
+                  backgroundColor: "#f0fdf4",
+                  borderColor: "#10b981",
+                },
+                isDisabled && {
+                  backgroundColor: "#f5f5f5",
+                  borderColor: "#d1d5db",
+                  opacity: 0.6,
                 },
               ]}
+              onPress={() => handleOptionSelect(option)}
+              activeOpacity={0.7}
+              disabled={isDisabled}
             >
-              {option}
-            </Text>
-            <Text style={styles.voteOptionArrow}>
-              {selectedOption === option ? "✓" : "→"}
-            </Text>
-          </TouchableOpacity>
-        ))}
+              <Text
+                style={[
+                  styles.voteOptionText,
+                  isSelected && {
+                    color: "#059669",
+                    fontWeight: "600",
+                  },
+                  isDisabled && {
+                    color: "#9ca3af",
+                  },
+                ]}
+              >
+                {option}
+              </Text>
+              <Text
+                style={[
+                  styles.voteOptionArrow,
+                  isSelected && { color: "#059669" },
+                  isDisabled && { color: "#9ca3af" },
+                ]}
+              >
+                {isSelected ? "✓" : "→"}
+              </Text>
+            </TouchableOpacity>
+          );
+        })}
       </ScrollView>
 
       {/* Action Buttons */}
@@ -209,13 +254,14 @@ const VotingModal: React.FC<VotingModalProps> = ({
             styles.closeButton,
             {
               flex: 0.48,
-              backgroundColor: selectedOption ? "#3b82f6" : "#9ca3af",
+              backgroundColor:
+                selectedOptions.length > 0 ? "#3b82f6" : "#9ca3af",
               borderWidth: 1,
-              borderColor: selectedOption ? "#2563eb" : "#6b7280",
+              borderColor: selectedOptions.length > 0 ? "#2563eb" : "#6b7280",
             },
           ]}
           onPress={handleConfirmVote}
-          disabled={!selectedOption}
+          disabled={selectedOptions.length === 0}
         >
           <Text
             style={[

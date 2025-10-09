@@ -55,8 +55,14 @@ export const styles = StyleSheet.create({
   voterProgressText: {
     fontSize: 14,
     color: "#666",
-    marginBottom: 8,
+    marginBottom: 4,
     fontWeight: "500",
+  },
+  voteCountText: {
+    fontSize: 12,
+    color: "#8b5cf6",
+    marginBottom: 8,
+    fontWeight: "600",
   },
   progressBar: {
     width: "100%",

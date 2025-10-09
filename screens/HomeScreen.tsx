@@ -27,14 +27,6 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
       screen: "VotingDecision",
       available: true,
     },
-    {
-      id: "coin",
-      title: "🪙 硬幣投擲",
-      description: "簡單的正反面選擇",
-      color: "#f59e0b",
-      screen: "CoinFlip",
-      available: false,
-    },
     // {
     //   id: "proscons",
     //   title: "📊 優缺點列表",
