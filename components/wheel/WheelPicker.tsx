@@ -11,6 +11,7 @@ import {
 import Svg, { Path, Text as SvgText, G } from "react-native-svg";
 import { useWheelCalculator } from "../../hooks/useWheelCalculator";
 import { WheelPickerProps } from "../../types";
+import { getColorPalette, getNextPaletteIndex } from "../../data/colorPalettes";
 
 const { width: screenWidth } = Dimensions.get("window");
 const wheelSize = Math.min(screenWidth * 0.95, 420); // 進一步增大輪盤尺寸
@@ -25,6 +26,7 @@ const WheelPicker: React.FC<WheelPickerProps> = ({
   const pulseValue = useRef(new Animated.Value(1)).current; // 脈動動畫值
   const flashValue = useRef(new Animated.Value(0)).current; // 閃爍動畫值
   const [currentRotation, setCurrentRotation] = useState<number>(0); // 保持當前輪盤位置
+  const [paletteIndex, setPaletteIndex] = useState<number>(0); // 當前配色方案索引
 
   // 使用 useWheelCalculator Hook
   const { calculateSpin, calculateResult, getDebugInfo } = useWheelCalculator();
@@ -71,25 +73,9 @@ const WheelPicker: React.FC<WheelPickerProps> = ({
     }
   }, [isSpinning, pulseValue, flashValue]);
 
-  // 紫色主題延伸配色板
-  const colors: string[] = [
-    "#9c27b0", // 深紫色
-    "#8e24aa", // 紫羅蘭
-    "#7b1fa2", // 皇家紫
-    "#673ab7", // 深紫羅蘭
-    "#5e35b1", // 靛紫色
-    "#512da8", // 深靛紫
-    "#4527a0", // 極深紫
-    "#311b92", // 午夜紫
-    "#6a1b9a", // 梅紫色
-    "#ad85c6", // 淡紫色
-    "#ba68c8", // 中紫色
-    "#ce93d8", // 淺紫粉
-    "#e1bee7", // 薰衣草紫
-    "#f3e5f5", // 極淺紫
-    "#9575cd", // 紫丁香
-    "#7986cb", // 藍紫色
-  ];
+  // 獲取當前配色方案（根據選項數量智能選擇）
+  const currentPalette = getColorPalette(paletteIndex, options.length);
+  const colors = currentPalette.colors;
 
   if (options.length === 0) {
     return (
@@ -157,6 +143,13 @@ const WheelPicker: React.FC<WheelPickerProps> = ({
     return angle;
   };
 
+  // 切換配色方案
+  const switchColorPalette = () => {
+    if (isSpinning) return; // 旋轉中不允許切換
+    const nextIndex = getNextPaletteIndex(paletteIndex, options.length);
+    setPaletteIndex(nextIndex);
+  };
+
   // 旋轉動畫
   const spin = () => {
     if (isSpinning) return;
@@ -212,9 +205,19 @@ const WheelPicker: React.FC<WheelPickerProps> = ({
 
   return (
     <View style={styles.container}>
-      {/* 指針 */}
-      <View style={styles.pointer}>
+      {/* 指針 - 可點擊切換配色 */}
+      <TouchableOpacity
+        style={styles.pointer}
+        onPress={switchColorPalette}
+        disabled={isSpinning}
+        activeOpacity={0.8}
+      >
         <Text style={styles.pointerText}>▼</Text>
+      </TouchableOpacity>
+
+      {/* 配色切換提示 */}
+      <View style={styles.colorHint}>
+        <Text style={styles.colorHintText}>點擊指針換色</Text>
       </View>
 
       {/* 輪盤 */}
@@ -246,7 +249,7 @@ const WheelPicker: React.FC<WheelPickerProps> = ({
                     d={createPath(startAngle, endAngle)}
                     fill={color}
                     stroke="#ffffff"
-                    strokeWidth={1}
+                    strokeWidth={0}
                   />
                   <SvgText
                     x={textPos.x}
@@ -273,8 +276,8 @@ const WheelPicker: React.FC<WheelPickerProps> = ({
           style={{
             transform: [{ scale: isSpinning ? 1 : pulseValue }],
             position: "absolute",
-            top: wheelSize / 2 - 50, // 動態計算中心位置
-            left: wheelSize / 2 - 50, // 動態計算中心位置
+            top: wheelSize / 2 - 50, // 回到圓形中心位置
+            left: wheelSize / 2 - 50, // 回到圓形中心位置
           }}
         >
           <TouchableOpacity
@@ -292,7 +295,7 @@ const WheelPicker: React.FC<WheelPickerProps> = ({
                 isSpinning && {
                   backgroundColor: flashValue.interpolate({
                     inputRange: [0, 1],
-                    outputRange: ["#ff1744", "#ff6d00"], // 閃爍在亮紅色和橙色之間
+                    outputRange: ["#f06292", "#ec407a"], // 閃爍在粉紅色系之間
                   }),
                 },
               ]}
@@ -366,23 +369,24 @@ const styles = StyleSheet.create({
     position: "relative",
   },
   centerCircle: {
-    width: 100, // 進一步增大中心按鈕
-    height: 100,
-    borderRadius: 50,
-    backgroundColor: "#00e676", // 鮮艷的綠色
+    width: 100, // 圓形按鈕
+    height: 100, // 圓形按鈕
+    borderRadius: 50, // 完全圓形
+    backgroundColor: "#e91e63", // 深灰色，與任何顏色都搭配
     alignItems: "center",
     justifyContent: "center",
-    borderWidth: 3, // 增加邊框寬度
-    borderColor: "#ffffff",
-    shadowColor: "#00e676",
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.6,
-    shadowRadius: 15,
-    elevation: 12,
+    borderWidth: 3,
+    borderColor: "#ffffff", // 白色邊框
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.4,
+    shadowRadius: 12,
+    elevation: 10,
     overflow: "hidden",
   },
   centerCircleSpinning: {
-    borderColor: "#ffff00", // 旋轉時邊框變成鮮黃色
+    backgroundColor: "#f06292", // 旋轉時更亮的粉紅色
+    borderColor: "#ffffff", // 旋轉時白色邊框
     borderWidth: 4,
   },
   centerCircleInner: {
@@ -401,14 +405,13 @@ const styles = StyleSheet.create({
   },
   centerButtonText: {
     color: "#ffffff",
-    fontSize: 15, // 增大按鈕文字
-    fontWeight: "900", // 使用最粗字體
+    fontSize: 16, // 增大按鈕文字
+    fontWeight: "bold", // 使用粗體
     textAlign: "center",
-    marginTop: 2,
-    textShadowColor: "rgba(0, 0, 0, 0.3)",
-    textShadowOffset: { width: 1, height: 1 },
-    textShadowRadius: 2,
-    letterSpacing: 0.5, // 增加字母間距
+    textShadowColor: "rgba(0, 0, 0, 0.5)",
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 1,
+    letterSpacing: 1, // 增加字母間距
   },
   resetButtonContainer: {
     alignItems: "center",
@@ -429,6 +432,22 @@ const styles = StyleSheet.create({
     color: "#ffffff",
     fontSize: 14,
     fontWeight: "bold",
+    textAlign: "center",
+  },
+  colorHint: {
+    position: "absolute",
+    top: 0,
+    right: 0,
+    backgroundColor: "rgba(0, 0, 0, 0.3)",
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 15,
+    zIndex: 9,
+  },
+  colorHintText: {
+    color: "#ffffff",
+    fontSize: 12,
+    fontWeight: "600",
     textAlign: "center",
   },
 });
