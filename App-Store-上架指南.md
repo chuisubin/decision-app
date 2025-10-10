@@ -1,6 +1,6 @@
 # 📱 App Store Connect 上架完整指南
 
-## 🎯 決策小助手 - iOS 上架步驟
+## 🎯 話得事嘅 APP - iOS 上架步驟
 
 恭喜您成功構建了應用！現在讓我們準備上架到 App Store。
 
@@ -27,7 +27,7 @@ eas build --platform ios --profile production
 #### 基本信息填寫：
 
 - **平台**：iOS
-- **名稱**：決策小助手
+- **名稱**：話得事嘅 APP
 - **主要語言**：繁體中文
 - **套件 ID**：com.gglababy.decisionapp
 - **SKU**：decision-app-v1 (唯一識別碼)
@@ -64,9 +64,9 @@ eas build --platform ios --profile production
 #### 📋 應用描述
 
 ```
-🎯 決策小助手 - 讓選擇變得簡單
+🎯 話得事嘅APP - 讓選擇變得簡單
 
-還在為日常選擇而煩惱嗎？「決策小助手」是您的完美解決方案！
+還在為日常選擇而煩惱嗎？「話得事嘅APP」是您的完美解決方案！
 
 ✨ 主要功能：
 • 智能主題識別 - 自動匹配常見場景
@@ -87,7 +87,7 @@ eas build --platform ios --profile production
 • 支持多種預設主題
 • 界面簡潔，操作直觀
 
-讓「決策小助手」幫您快速做出選擇，告別選擇困難症！
+讓「話得事嘅APP」幫您快速做出選擇，告別選擇困難症！
 ```
 
 #### 🏷 關鍵字
@@ -188,7 +188,7 @@ eas submit --platform ios
 
 ## 🎉 恭喜！
 
-完成以上步驟後，您的「決策小助手」就會在 App Store 上架了！
+完成以上步驟後，您的「話得事嘅 APP」就會在 App Store 上架了！
 
 ## 📞 需要幫助？
 

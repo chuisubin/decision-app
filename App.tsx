@@ -27,7 +27,7 @@ function App(): React.ReactElement {
             name="Home"
             component={HomeScreen}
             options={{
-              title: "決策小助手",
+              title: "話得事嘅APP",
             }}
           />
           <Stack.Screen

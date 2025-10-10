@@ -22,7 +22,8 @@
       "infoPlist": {
         "CFBundleDisplayName": "話得事嘅APP",
         "CFBundleName": "話得事嘅APP",
-        "ITSAppUsesNonExemptEncryption": false
+        "ITSAppUsesNonExemptEncryption": false,
+        "CFBundleLocalizations": ["zh-Hant"]
       }
     },
     "android": {
