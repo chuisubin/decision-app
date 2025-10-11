@@ -11,7 +11,6 @@ import {
 } from "react-native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../types/navigation";
-import { PlayerResult } from "../types";
 import { styles } from "../styles/CompetitionDecisionStyles";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Collapsible from "../components/Collapsible";
@@ -96,6 +95,52 @@ const CompetitionDecisionScreen: React.FC<Props> = ({ navigation }) => {
             >
               <Text style={styles.addButtonText}>添加</Text>
             </TouchableOpacity>
+          </View>
+
+          {/* 動物 emoji 選擇區 */}
+          <View
+            style={{ flexDirection: "row", flexWrap: "wrap", marginTop: 10 }}
+          >
+            {[
+              { icon: "🐶", name: "小狗" },
+              { icon: "🐱", name: "小貓" },
+              { icon: "🐭", name: "老鼠" },
+              { icon: "🐹", name: "倉鼠" },
+              { icon: "🐰", name: "兔子" },
+              { icon: "🦊", name: "狐狸" },
+              { icon: "🐻", name: "熊" },
+              { icon: "🐼", name: "熊貓" },
+              { icon: "🐯", name: "老虎" },
+              { icon: "🦁", name: "獅子" },
+              { icon: "🐮", name: "牛" },
+              { icon: "🐷", name: "豬" },
+              { icon: "🐸", name: "青蛙" },
+              { icon: "🐵", name: "猴子" },
+              { icon: "🐔", name: "雞" },
+              { icon: "🐧", name: "企鵝" },
+              { icon: "🐦", name: "小鳥" },
+              { icon: "🐴", name: "馬" },
+              { icon: "🐟", name: "魚" },
+              { icon: "🦄", name: "獨角獸" },
+            ].map((animal, idx) => (
+              <TouchableOpacity
+                key={animal.icon}
+                style={{
+                  padding: 6,
+                  margin: 2,
+                  borderRadius: 8,
+                  backgroundColor: "#f2f2f2",
+                }}
+                onPress={() => {
+                  const display = animal.icon + animal.name;
+                  if (!participants.includes(display)) {
+                    setParticipants([...participants, display]);
+                  }
+                }}
+              >
+                <Text style={{ fontSize: 24 }}>{animal.icon}</Text>
+              </TouchableOpacity>
+            ))}
           </View>
 
           <View style={styles.participantsList}>

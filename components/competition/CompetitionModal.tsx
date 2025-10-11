@@ -98,7 +98,7 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({
           <Text style={styles.winnerLabel}>🥇 獲勝者</Text>
           <Text style={styles.winnerName}>{winner.name}</Text>
           <Text style={styles.winnerScore}>
-            {winner.time.toFixed(2)}s (差距: {winner.difference.toFixed(2)}s)
+            {winner.time.toFixed(2)} (差距: {winner.difference.toFixed(2)})
           </Text>
         </View>
 
@@ -112,7 +112,7 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({
               <Text style={styles.rankingPosition}>#{index + 1}</Text>
               <Text style={styles.rankingName}>{result.name}</Text>
               <Text style={styles.rankingScore}>
-                {result.time.toFixed(2)}s (±{result.difference.toFixed(2)}s)
+                {result.time.toFixed(2)} (±{result.difference.toFixed(2)})
               </Text>
             </View>
           ))}
