@@ -56,6 +56,21 @@ export const presetOptions: PresetOptionsConfig = {
       "自助餐",
     ],
   },
+  animal: {
+    displayName: "動物",
+    options: [
+      "🐶", // 狗
+      "🐱", // 貓
+      "🐭", // 老鼠
+      "🐹", // 倉鼠
+      "🐰", // 兔
+      "🦊", // 狐狸
+      "🐻", // 熊
+      "🐼", // 熊貓
+      "🐯", // 老虎
+      "🦁", // 獅子
+    ],
+  },
   beverage: {
     displayName: "飲料",
     options: [
