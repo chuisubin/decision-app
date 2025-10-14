@@ -2,7 +2,7 @@
   "expo": {
     "name": "話得事嘅APP",
     "slug": "decision-app",
-    "version": "1.4.0",
+    "version": "1.5.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -18,7 +18,7 @@
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "com.gglababy.decisionapp",
-      "buildNumber": "4",
+      "buildNumber": "5",
       "infoPlist": {
         "CFBundleDisplayName": "話得事嘅APP",
         "CFBundleName": "話得事嘅APP",

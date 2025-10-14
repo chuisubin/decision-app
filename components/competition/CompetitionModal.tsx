@@ -15,6 +15,7 @@ interface CompetitionModalProps {
   visible: boolean;
   participants: string[];
   difficulty: 1 | 2 | 3;
+  showRanking: boolean; // 新增顯示排行的屬性
   onClose: () => void;
 }
 
@@ -22,6 +23,7 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({
   visible,
   participants,
   difficulty,
+  showRanking,
   onClose,
 }) => {
   const [gameState, setGameState] = useState<"playing" | "results">("playing");
@@ -73,6 +75,7 @@ const CompetitionModal: React.FC<CompetitionModalProps> = ({
       <CompetitionGame
         participants={participants}
         difficulty={difficulty}
+        showRanking={showRanking} // 傳遞顯示排行的屬性
         onGameComplete={handleGameComplete}
         onExitGame={handleExitGame}
       />

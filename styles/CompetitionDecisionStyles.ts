@@ -171,4 +171,17 @@ export const styles = StyleSheet.create({
     color: "#666",
     lineHeight: 20,
   },
+
+  // Switch樣式
+  switchContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginVertical: 10,
+    paddingHorizontal: 10,
+  },
+  switchLabel: {
+    fontSize: 16,
+    color: "#333",
+  },
 });

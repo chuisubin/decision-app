@@ -8,6 +8,7 @@ import {
   TextInput,
   KeyboardAvoidingView,
   Platform,
+  Switch,
 } from "react-native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../types/navigation";
@@ -31,6 +32,7 @@ const CompetitionDecisionScreen: React.FC<Props> = ({ navigation }) => {
   const [newParticipantName, setNewParticipantName] = useState("");
   const [difficulty, setDifficulty] = useState<1 | 2 | 3>(1);
   const [showGameModal, setShowGameModal] = useState<boolean>(false);
+  const [showRanking, setShowRanking] = useState(false); // 新增狀態管理
 
   // 開始遊戲
   const startGame = () => {
@@ -227,6 +229,17 @@ const CompetitionDecisionScreen: React.FC<Props> = ({ navigation }) => {
             </Text>
           </View>
         </Collapsible>
+        <Collapsible
+          title="其他設定"
+          icon="⚙️"
+          isInitiallyCollapsed={true}
+          containerStyle={styles.collapsibleContainer}
+        >
+          <View style={styles.switchContainer}>
+            <Text style={styles.switchLabel}>顯示排行</Text>
+            <Switch value={showRanking} onValueChange={setShowRanking} />
+          </View>
+        </Collapsible>
         <TouchableOpacity
           style={[
             styles.startButton,
@@ -278,6 +291,7 @@ const CompetitionDecisionScreen: React.FC<Props> = ({ navigation }) => {
         visible={showGameModal}
         participants={participants}
         difficulty={difficulty}
+        showRanking={showRanking} // 將狀態傳遞給 CompetitionModal
         onClose={closeGameModal}
       />
     </>

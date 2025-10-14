@@ -45,7 +45,8 @@ export const styles = StyleSheet.create({
   // Modal Body
   modalBody: {
     flex: 1,
-    padding: 20,
+    maxHeight: "70%", // Ensure the modal body does not exceed 70% of the screen height
+    paddingHorizontal: 10,
   },
 
   // Winner Section
@@ -78,22 +79,21 @@ export const styles = StyleSheet.create({
 
   // Ranking Section
   rankingContainer: {
-    marginTop: 10,
+    marginTop: 20,
+    padding: 10,
+    backgroundColor: "#f9f9f9",
+    borderRadius: 8,
   },
   rankingTitle: {
     fontSize: 18,
     fontWeight: "bold",
+    marginBottom: 10,
     color: "#333",
-    marginBottom: 15,
-    textAlign: "center",
   },
   rankingItem: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#f8f9fa",
-    padding: 15,
-    marginVertical: 5,
-    borderRadius: 10,
+    fontSize: 16,
+    color: "#555",
+    marginBottom: 5,
   },
   firstPlace: {
     backgroundColor: "#fff3cd",
@@ -117,6 +117,9 @@ export const styles = StyleSheet.create({
     fontSize: 14,
     color: "#666",
     fontWeight: "500",
+  },
+  rankingScrollContent: {
+    paddingBottom: 10,
   },
 
   // Modal Footer

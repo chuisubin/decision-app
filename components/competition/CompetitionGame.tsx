@@ -1,11 +1,19 @@
 import React, { useState, useRef, useEffect } from "react";
-import { View, Text, TouchableOpacity, Alert, Animated } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Alert,
+  Animated,
+  ScrollView,
+} from "react-native";
 import { styles } from "./CompetitionGameStyles";
 import { PlayerResult } from "../../types";
 
 interface CompetitionGameProps {
   participants: string[];
   difficulty: 1 | 2 | 3; // 新增難度參數
+  showRanking: boolean; // 新增顯示排行的屬性
   onGameComplete: (results: PlayerResult[]) => void;
   onExitGame: () => void;
 }
@@ -13,6 +21,7 @@ interface CompetitionGameProps {
 const CompetitionGame: React.FC<CompetitionGameProps> = ({
   participants,
   difficulty, // 接收難度參數
+  showRanking,
   onGameComplete,
   onExitGame,
 }) => {
@@ -260,6 +269,20 @@ const CompetitionGame: React.FC<CompetitionGameProps> = ({
               </View>
             )}
         </View>
+
+        {showRanking && results.length > 0 && (
+          <ScrollView style={styles.rankingScrollView}>
+            <View style={styles.rankingContainer}>
+              {[...results]
+                .sort((a, b) => a.difference - b.difference)
+                .map((result, index) => (
+                  <Text key={index} style={styles.rankingItem}>
+                    #{index + 1} {result.name} ({result.time.toFixed(2)}秒)
+                  </Text>
+                ))}
+            </View>
+          </ScrollView>
+        )}
       </View>
     </View>
   );
