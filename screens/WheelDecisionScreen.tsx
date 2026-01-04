@@ -15,7 +15,6 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { NavigationProp } from "@react-navigation/native";
 import { styles } from "../styles/WheelDecisionStyles";
 import WheelPicker from "../components/wheel/WheelPicker";
-import Collapsible from "../components/Collapsible";
 import TopicInput from "../components/wheel/TopicInput";
 import OptionsEditor from "../components/wheel/OptionsEditor";
 import {
@@ -36,9 +35,6 @@ const WheelDecisionScreen: React.FC<WheelDecisionScreenProps> = ({
   const [result, setResult] = useState<string>("");
   const [showResultPopup, setShowResultPopup] = useState<boolean>(false);
   const [fadeAnim] = useState<Animated.Value>(new Animated.Value(0));
-  const [selectedPresetCategory, setSelectedPresetCategory] = useState<
-    string | null
-  >(null);
   const [showOptionsEditor, setShowOptionsEditor] = useState<boolean>(false);
 
   // 獲取當前可用選項
@@ -72,7 +68,6 @@ const WheelDecisionScreen: React.FC<WheelDecisionScreenProps> = ({
     setCustomOptions([""]);
     setResult("");
     setShowResultPopup(false);
-    setSelectedPresetCategory(null);
     fadeAnim.setValue(0);
   };
 
@@ -130,7 +125,6 @@ const WheelDecisionScreen: React.FC<WheelDecisionScreenProps> = ({
                     key.includes(text.toLowerCase())
                   );
                 });
-                setSelectedPresetCategory(matchedKey || null);
 
                 // 如果匹配到預設分類，自動填入選項
                 if (matchedKey && presetOptions[matchedKey]) {
@@ -144,7 +138,6 @@ const WheelDecisionScreen: React.FC<WheelDecisionScreenProps> = ({
                 // category 現在是中文顯示名稱，需要轉換為 key
                 if (category) {
                   const categoryKey = getCategoryKeyByDisplayName(category);
-                  setSelectedPresetCategory(categoryKey);
                   // 當直接選擇分類時也要填入選項
                   if (categoryKey) {
                     setCustomOptions(getOptionsByKey(categoryKey));
